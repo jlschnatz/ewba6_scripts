@@ -1,5 +1,5 @@
 ---
-title: "EWA-BA6"
+title: "EW-BA6"
 subtitle: "Deskriptive und inferenzstatistische Analyse"
 author:
   - name: "Luca Schnatz"
@@ -184,8 +184,8 @@ ggplot(data_proc, aes(alter, fomo)) +
    ) +
    # Titel
    labs(
-      title = "Streudiagramm: Zusammenhang zwischen FOMO und Alter",
-      subtitle = "Blaue Linie: geschätzter linearer Zusammenhang; graues Band: Unsicherheitsbereich"
+      title = "**Streudiagramm: Zusammenhang zwischen FOMO und Alter**",
+      subtitle = "*Blaue Linie: geschätzter linearer Zusammenhang; graues Band: Unsicherheitsbereich*"
    ) # + theme() # für weitere Anpassung
 
 ```
@@ -382,6 +382,10 @@ ggplot(data_proc, aes(verfuegbarkeitserwartung, fomo)) +
       name = "Verfügbarkeitserwartung",
       labels = c("Niedrig", "Mittel", "Hoch")
    ) +
+   labs(
+      title = "**Dichteplot der FOMO-Skala nach Verfügbarkeitserwartung**",
+      subtitle = "*Der innere graue Bereich zeigt den Interquartilsbereich (IQR), der die mittleren 50 % der Werte umfasst und damit die Streuung und Symmetrie der Verteilung innerhalb jeder Gruppe verdeutlicht.*"  
+      ) +
    scale_fill_manual(values = c("grey90", "grey70", NA))
 
 ```
@@ -426,5 +430,11 @@ Die Ergebnisse zeigen:
 - Zwischen „niedrig“ und „hoch“ sowie zwischen „mittel“ und „hoch“ bestehen jeweils signifikante Unterschiede (*p* < .001). In beiden Fällen ist der FOMO-Wert bei Personen mit hoher Verfügbarkeitserwartung im Mittel um etwa 14 Punkte höher als in den anderen Gruppen.
 
 
+# Verwendete R-Pakete
 
+```{r}
+
+sessioninfo::session_info(pkgs = "attached")
+
+```
 

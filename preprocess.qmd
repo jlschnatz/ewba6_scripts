@@ -1,5 +1,5 @@
 ---
-title: "EWA-BA6"
+title: "EW-BA6"
 subtitle: "Datenaufbereitung"
 author:
   - name: "Erik Grützner"
