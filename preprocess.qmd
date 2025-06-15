@@ -1,0 +1,268 @@
+---
+title: "EWA-BA6"
+subtitle: "Datenaufbereitung"
+author:
+  - name: "Erik Grützner"
+    affiliation: "Institut für Psychologie, Abteilung für Differentielle Psychologie und Psychologische Diagnostik"
+    email: gruetzner@psych.uni-frankfurt.de
+    corresponding: true
+  - name: "Luca Schnatz"
+    affiliation: "Institut für Psychologie, Abteilung für Psychologische Methoden mit Interdisziplinärer Ausrichtung"
+    email: schnatz@psych.uni-frankfurt.de
+date: today
+format: 
+   html:
+      toc: true
+      theme: cosmo               
+      toc-depth: 3 
+      language: de    
+      lang: de          
+      number-sections: true      
+      self-contained: true       
+      code-fold: false            
+      code-tools: false           
+      highlight-style: github    
+      html-math-method: mathjax  
+      fig-align: center          
+      fig-cap-location: bottom   
+      fig-responsive: true      
+      echo: true   
+      warning: false              
+      anchor-sections: true     
+      smooth-scroll: true       
+---
+
+# Einleitung
+
+In diesem Skript geht es um die Vorbereitungen für die Analysen, die ihr im Rahmen eurer Hausarbeit rechnen sollt. D.h. wir bereiten die Daten so auf, dass sie mithilfe des 2. Skripts ausgewertet werden können. Dies machen wir anhand eines Beispieldatensatzes, der eurem ähnelt und auch die gleichen Probleme und Fallstricke beinhaltet, sodass ihr im besten Fall die Skripte kopieren könnt und nur noch an eure Studien anpassen müsst.
+
+# Daten in R laden
+
+Als erstes müssen die notwendigen Pakete geladen werden.
+
+Im zweiten Schritt müsst ihr die erhobenen Daten aus SosciSurvey in R laden, um dort mit den Daten rechnen und arbeiten zu können. Wenn man Dateien von SosciSurvey herunterlädt, liegen sie üblicherweise als `.csv` oder als `.excel` vor, hier als `.csv`.
+
+Ladet den Datensatz wie im entsprechenden Video vorgestellt von SosciSurvey herunter und stellt euer Working Directory richtig ein (`setwd()`). Dies muss der Ordner sein, indem der Datensatz liegt (verschiebt ihn hierfür manuell aus dem Downloadordner). Danach kann der Datensatz folgendermaßen eingelesen werden `read_csv()`.
+
+```{r}
+#| echo: false
+
+library(dplyr)
+library(naniar)
+library(psych)
+library(readr)
+library(sjmisc)
+
+data_roh <- read.csv("data/raw/data_ewba6_raw_v2.csv") # Datensatz in R laden
+
+```
+
+
+```{r}
+#| eval: false
+#| echo: true
+## Pakete laden:
+install.packages("dplyr")
+library(dplyr)
+
+install.packages("naniar")
+library(naniar)
+
+install.packages("psych")
+library(psych)
+
+install.packages("readr")
+library(readr)
+
+install.packages("sjmisc")
+library(sjmisc)
+
+## Abfrage und Einstellen des Working Directory:
+getwd() # Abfrage des Working Directory
+setwd("C:path/to/directory") # Hier euren Ordner einstellen
+
+## Datensatz einladen
+data_roh <- read.csv("name-des-datensatzes.csv") # Datensatz in R laden
+```
+
+# Überblick über die Daten erhalten
+
+Als erstes betrachten wir, welche Variablen alle existieren. Hierfür nutzen wir den colnames()-Befehl, der uns die Spaltennamen anzeigt. Im nächsten Schritt speichern wir einen 2. Datensatz, in dem die Variablen, die uns nicht interessieren (z.B. die IDs in SosciSurvey, die benötige Zeit, etc.) herauslöschen. Wir wählen hier die Proband:innen-Nummer, die demografischen Variablen (fangen alle mit "EI" an), die Items unseres Fragebogens (fangen alle mit "K" an) und die erwartete Verfügbarkeit in der Freundesgruppe ("VE01") aus, ihr solltet in eurer Arbeit alle Variablen auswählen, die wichtig für eure Auswertung sind. Wenn ihr kein Muster in der Benennung der Variablennamen habt (also EI bzw. K), könnt ihr auch die Ergebnisse des colnames()-Befehls nutzen.
+
+```{r}
+## Namen abfragen:
+colnames(data_roh)
+
+## Möglichkeit 1 (mit Mustern bei den Variablennamen):
+data_brauchbar <- select(data_roh, c(CASE, matches("EI\\d{2}"), matches("K\\d{3}_\\d{2}"), VE01))
+
+## Möglichkeit 2 (ohne Muster - manuelle Auswahl):
+# Spaltennamen augeben lassen über colnames()
+data_brauchbar <- data_roh[, c(1, 7:44, 64)] # Spalte 1 und 7 bis 44 und 64 auswählen
+```
+
+Im nächsten Schritt wollen wir die Variablen so umbenennen, dass wir sie im nächsten Schritt einfacher nutzen können. Die notwendige Informationen sind im Codebook enthalten, welches ihr ebenfalls bei SosciSurvey herunterladen könnt. Es macht Sinn, die Namen auch inhaltlich zu benennen, in unserem Beispiel geht es um FOMO - Fear of missing out.
+
+```{r}
+## Neue Spaltennamen:
+colnames(data_brauchbar) <- c(
+  "id", "zustimmung", "geschlecht", "alter", 
+  paste0("fomo", seq(1, 35)), "verfuegbarkeitserwartung"
+  )
+```
+
+Nun interessiert es uns, ob es fehlende Werte gibt. Dies kann man mit dem `anyNA()`-Befehl erfragen. Allerdings gibt es hier eine Schwierigkeiten, da SosciSurvey fehlende Werte nicht als NA sondern als -1 bzw. -9 speichert. Aus diesem Grund müssen wir festlegen, dass -1 und -9 als NAs angesehen werden.
+
+```{r}
+## Abfrage, ob NAs vorhanden sind:
+anyNA(data_brauchbar) # FALSE 
+
+## Abfrage, ob -1 oder -9 vorhanden ist:
+any(data_brauchbar == -9) # TRUE
+any(data_brauchbar == -1) # TRUE
+
+## Da diese fehlenden Werte vorhanden sind, müssen diese als NAs gelabelt werden:
+data_brauchbar[data_brauchbar == -9] <- NA
+data_brauchbar[data_brauchbar == -1] <- NA
+
+## Abfrage, ob es nun NAs gibt:
+anyNA(data_brauchbar) # TRUE -> das Umlabeln hat also funktioniert 
+
+## Wie viele Daten fehlen:
+sum(is.na(data_brauchbar)) # 95 fehlende Angaben
+```
+
+In diesem Fall sind 95 fehlende Werte vorhanden. Um die fehlenden Werte genauer zu explorieren, sollte am Rande das naniar-Package erwähnt werden, da es einige nützliche Funktionen diesbezüglich enthält. Wir können zum Beispiel über die cases (Proband:innen) hinweg die prozentuale Häufigkeit an Missings visualisieren.
+
+```{r}
+#| fig-align: center
+
+
+naniar::gg_miss_case(
+  x = data_brauchbar, 
+  show_pct = TRUE, 
+  order_cases = FALSE
+  )
+```
+
+Wir sehen, dass zwei Proband:innen den kompletten Fragebogen nicht ausgefüllt hat und mehrere Personen einzelne Fragen nicht beantwortet haben. Dies gucken wir uns nochmal genauer an:
+
+```{r}
+# Anzahl NAs pro Person (Zeile)
+na_count_per_person <- data_brauchbar |> # Datensatz auswählen
+  mutate(na_count = rowSums(is.na(data_brauchbar))) |> # NAs pro Reihe 
+  select(id, na_count) |> # Nach der ID-Nummer darstellen
+  filter(na_count > 0) |> # Nur Personen, die mind. 1 NA haben
+  arrange(desc(na_count))  # sortiert nach Anzahl NAs (absteigend)
+
+# Ausgabe anzeigen
+print(na_count_per_person)
+```
+
+Hier sehen wir nun, dass 2 Proband:innen 35 Items nicht beantwortet haben und 17 Personen mind. 1 NA haben. Die 19 Personen sollen aufgrund der Einfachheit mit na.omit() ausgeschlossen werden.
+
+::: {.callout-warning title="Disclaimer zu fehlenden Werten"}
+Es sollte zumindest am Rande erwähnt werden, dass die Funktion `na.omit()` sehr mächtig ist und nur mit Vorsicht verwendet werden sollte. Ohne weitere Überlegungen NAs auszuschließen, deren Fehlen möglicherweise nicht zufällig ist, sondern durch andere (nicht)-erhobene Variablen bedingt sind, kann zu Verzerrungen führen.
+
+Für dieses Seminar ist es aber ok Personen mit fehlenden Werten auszuschließen. Falls ihr euch mehr mit dem Thema NAs auseinandersetzen wollt, hier ein spannender [Blogpost](https://www.iriseekhout.com/post/2022-06-28-missingdatamechanisms/).
+:::
+
+```{r}
+data_ohneNA <- na.omit(data_brauchbar) # NAs auschließen
+```
+
+# Datenaufbereitung
+
+In diesem Abschnitt wird der Datensatz Schritt für Schritt für unsere Analysen vorbereitet. Zuerst wird die Variable Geschlecht (`geschlecht`), die standardmäßig von SosciSurvey aus Zahlen 1 bis 3 beinhaltet, in eine verständlichere Form umgewandelt: Die Zahlen stehen jetzt für "m" (männlich), "w" (weiblich) und "d" (divers). Die Reihenfolge in der die Geschlechter durchnummeriert sind, hängt von eurer Erhebung ab. Ihr könnt diese im Codebook nachschauen.
+
+Die Variable "Erwartung der Verfuegbarkeit" (`verfuegbarkeitserwartung`) beinhaltet inwieweit die eigene Freundesgruppe erwartet, dass man schnell antwortet und für Ihre Anliegen und Probleme verfügbar ist. Diese Variable muss ebenfalls als analog zum Geschlecht als Faktor umkodiert werden. 
+
+```{r}
+# Geschlecht:
+table(data_ohneNA$geschlecht)
+
+# Umwandlung in Faktor
+data_ohneNA$geschlecht <- factor(
+  x = data_ohneNA$geschlecht, # Variable auswählen 
+  levels = 1:3, # 3 Geschlechter erhoben
+  labels = c("m", "w", "d") # Reihenfolge wie auch erhoben wurde
+  ) 
+
+table(data_ohneNA$geschlecht)
+
+# Verfuegbarkeitserwartung:
+table(data_ohneNA$verfuegbarkeitserwartung)
+
+# Umwandlung in Faktor
+data_ohneNA$verfuegbarkeitserwartung <- factor(
+  x = data_ohneNA$verfuegbarkeitserwartung,
+  levels = c("niedrig", "mittel", "hoch"),
+  labels = c("niedrig", "mittel", "hoch")
+  )
+
+table(data_ohneNA$verfuegbarkeitserwartung)
+
+```
+
+Bevor wir einen summierten FOMO-Wert berechnen können, müssen wir im Codebook gucken, ob es invertierte Items gibt, d.h. Fragen bei denen hohe Werte (entgegen des inhaltlichen Zusammenhangs) für weniger FOMO spricht. Dies ist für die Items 10, 24, 29, 30, 32 der Fall. Danach können wir einen Gesamtwert "FOMO" berechnen, wofür rowSums-Befehlt nutzen.
+
+```{r}
+# Invertierte Items umkodieren (1 <-> 4, 2 <-> 3 entspricht: 5 - Wert)
+data_ohneNA$fomo10_inv <- 5 - data_ohneNA$fomo10
+data_ohneNA$fomo24_inv <- 5 - data_ohneNA$fomo24
+data_ohneNA$fomo29_inv <- 5 - data_ohneNA$fomo29
+data_ohneNA$fomo30_inv <- 5 - data_ohneNA$fomo30
+data_ohneNA$fomo32_inv <- 5 - data_ohneNA$fomo32
+
+# Oder gleichzeitig durch
+names_inverse_items <- paste0("fomo", c(10, 24, 29, 30, 32))
+print(names_inverse_items)
+new_names <- paste0(names_inverse_items, "_inv")
+print(new_names)
+
+data_ohneNA[, new_names] <- lapply(
+  X = data_ohneNA[, names_inverse_items], 
+  # Neue Spalten aus `new_names`
+  FUN = function(x) sjmisc::rec(x, rec = "rev") 
+  # rec() Funktion des scmisc-Pakets mit rec = "rev" für reverse
+  )
+
+# Liste der zu summierenden Items (inkl. invertierter Items)
+fomo_items <- c(
+  paste0("fomo", 1:9),
+  "fomo10_inv",
+  paste0("fomo", 11:23),
+  "fomo24_inv",
+  paste0("fomo", 25:28),
+  "fomo29_inv",
+  "fomo30_inv",
+  "fomo31",
+  "fomo32_inv",
+  paste0("fomo", 33:35)
+)
+
+# Summenwert berechnen
+data_ohneNA$fomo <- rowSums(data_ohneNA[, fomo_items])
+head(data_ohneNA$fomo)
+
+```
+
+# Exportieren des Datensatzes
+
+Abschließend exportieren wir unseren aufbereiteten Datensatz, damit wir im nächsten Skript weiter damit arbeiten können und tatsächliche deskriptive und inferenzstatistische Analysen durchführen können. Wählt hier einen Ort auf euerem PC und Dateinamen aus, sodass ihr die Datei wiederfindet.
+
+```{r}
+
+write_csv(data_ohneNA, "data/proc/daten_fomo_processed.csv")
+
+```
+
+
+# Verwendete Pakete
+
+
+
+```{r}
+sessioninfo::session_info(pkgs = "attached")
+
+```

@@ -1,0 +1,430 @@
+---
+title: "EWA-BA6"
+subtitle: "Deskriptive und inferenzstatistische Analyse"
+author:
+  - name: "Luca Schnatz"
+    affiliation: "Institut für Psychologie, Abteilung für Psychologische Methoden mit Interdisziplinärer Ausrichtung"
+    email: schnatz@psych.uni-frankfurt.de
+  - name: "Erik Grützner"
+    affiliation: "Institut für Psychologie, Abteilung für Differentielle Psychologie und Psychologische Diagnostik"
+    email: gruetzner@psych.uni-frankfurt.de
+    corresponding: true
+date: today
+format: 
+   html:
+      toc: true
+      theme: cosmo               
+      toc-depth: 3 
+      language: de    
+      lang: de          
+      number-sections: true      
+      self-contained: true       
+      code-fold: false            
+      code-tools: false           
+      highlight-style: github    
+      html-math-method: mathjax  
+      fig-align: center          
+      fig-cap-location: bottom   
+      fig-responsive: true      
+      echo: true   
+      warning: false              
+      anchor-sections: true     
+      smooth-scroll: true        
+---
+
+```{css}
+#| echo: false
+code {
+  color:rgb(225, 40, 87); 
+  font-weight: normal; /* optional */
+}
+
+```
+
+```{r ggplot-theme}
+#| echo: false
+pacman::p_load(sysfonts, showtext, ggplot2)
+font_add_google("Open Sans", "font")
+showtext_auto()
+showtext_opts(dpi = 300)
+
+theme_set(
+   sjPlot::theme_sjplot() +
+   theme(
+      text = element_text(family = "font"),
+      plot.title.position = "plot",
+      panel.background = element_rect(color = "lightgrey"),
+      plot.title = ggtext::element_textbox_simple(size = 13),
+      plot.subtitle = ggtext::element_textbox_simple(size = 11)
+      ) 
+   )
+
+```
+
+# Einleitung
+
+Nachdem wir im ersten Skript gelernt haben, wie man einen Beispieldatensatz für die Analyse vorbereitet, beschäftigen wir uns nun mit den Möglichkeiten der statistischen Auswertung. Wir setzen direkt am bisherigen Beispiel an und führen euch Schritt für Schritt durch die wichtigsten Methoden der deskriptiven und inferenzstatistischen Analyse.
+
+# Daten in R laden
+
+Bevor wir mit der Analyse beginnen, müssen wir alle benötigten Pakete laden. Das pacman-Paket ermöglicht es, mehrere Pakete gleichzeitig zu laden. Falls ihr es noch nicht installiert habt, könnt ihr das mit `install.packages("pacman")` nachholen.
+
+```{r load-packages}
+# install.packages("pacman")
+pacman::p_load(
+   readr,      # Daten einlesen
+   dplyr,      # Datenmanipulation
+   rstatix,    # Statistische Analysen
+   ggplot2,    # Grafiken
+   ggdist,     # Grafiken
+   sjPlot      # Tabellen
+   )
+```
+
+
+Wir laden zunächst die vorbereiteten Daten. Achtet darauf, dass der Pfad zur Datei stimmt:
+
+```{r load-data}
+
+data_proc <- read_csv("data/proc/daten_fomo_processed.csv")
+head(data_proc)
+```
+
+Da CSV-Dateien keine Informationen über Faktoren speichern, müssen kategoriale Variablen wie „Geschlecht“ oder „Verfügbarkeitserwartung“ erneut als Faktor kodiert werden:
+
+
+```{r recode-data}
+# Geschlecht
+data_proc$geschlecht <- factor(data_proc$geschlecht, levels = c("m", "w", "d")) 
+
+# Verfuegbarkeitserwartung:
+data_proc$verfuegbarkeitserwartung <- factor(data_proc$verfuegbarkeitserwartung, levels = c("niedrig", "mittel", "hoch"))
+
+```
+
+# Deskriptive Statistik
+
+## Kategorische Variablen
+
+Für die Beschreibung von kategorialen Variablen sind absolute und relative Häufigkeiten zentral. Sie zeigen, wie viele Personen in jeder Gruppe sind und wie groß ihr Anteil an der Gesamtstichprobe ist. In R können wir dafür den `freq_table()` aus dem Paket *rstatix* nutzen.
+
+```{r descr1}
+tab_df(freq_table(data_proc, geschlecht), col.header = c("Geschlecht", "N", "Relative Häufigkeit"))
+```
+
+Auch für Kombinationen mehrerer Kategorien (z.B. Geschlecht und Verfügbarkeitserwartung) ist dies möglich.
+
+
+```{r, descr2}
+tab_df(freq_table(data_proc, geschlecht, verfuegbarkeitserwartung), col.header = c("Geschlecht", "Verfügbarkeitserwartung", "N", "Relative Häufigkeit"))
+```
+
+## Numerische Variablen
+
+Numerische Variablen wie „Alter“ oder „FOMO“ werden mit statistischen Kennwerten wie Mittelwert (Durchschnitt), Standardabweichung (Streuung), Median (Zentralwert) und weiteren beschrieben (s.h. Folien). Diese Kennwerte geben einen schnellen Überblick über die Verteilung der Daten.
+
+In R nutzen wir dafür die `get_summary_stats()` Funktion.
+
+```{r, descr3}
+
+tab_df(get_summary_stats(select(data_proc, c(alter, fomo)), type = "common"))
+
+```
+
+Mit dem Argument type kann festgelegt werden, welche Kennwerte angezeigt werden sollen. Weitere Informationen liefert `help(get_summary_stats)`.
+
+
+```{r, descr4}
+data_proc |>
+   select(fomo, verfuegbarkeitserwartung) |> # relevante Variablen selektieren
+   group_by(verfuegbarkeitserwartung) |> # Gruppierung nach kategorieller Variable
+   get_summary_stats(type = "mean_sd") |> # Mittelwert und Standardabweichung
+   select(-variable) |>
+   tab_df(col.header = c("Verfügbarkeitserwartung", "N", "M", "SD"), digits = 1) # Rundung auf eine Nachkommastelle
+```
+
+# Inferenzstatistik
+
+Die Inferenzstatistik beschäftigt sich mit der Frage, ob die in einer Stichprobe beobachteten Zusammenhänge oder Unterschiede auch in der Grundgesamtheit (Population) bestehen. Dazu werden Hypothesen formuliert und mit Hilfe von Signifikanztests überprüft. Im Folgenden werden ein paar zentrale inferenzstatistische Verfahren beispielhaft vorgestellt, die auf unterschiedlichen Fragestellungen basieren.
+
+
+## Korrelationen
+
+Wenn wir untersuchen möchten, ob zwei Variablen systematisch miteinander zusammenhängen, also ob sie gemeinsam *kovariieren*, nutzen wir die **Korrelation** als Maß für die Richtung und Stärke des Zusammenhangs. Im vorliegenden Beispiel interessiert uns, ob das Alter mit dem FOMO-Wert negativ zusammenhängt – also ob ältere Personen geringere FOMO-Werte aufweisen.
+
+**Hypothesenformulierung**:
+
+Wir gehen in diesem Fall also von einem gerichteten Zusammenhang aus:
+
+- Nullhypothese ($\mathcal{H}_0$): Es besteht kein negativer Zusammenhang zwischen Alter und FOMO, also $r \geq 0$.
+- Alternativhypothese ($\mathcal{H}_1$): Es besteht ein negativer Zusammenhang, also $r < 0$.
+
+
+**Visuelle Überprüfung**
+
+Bevor wir den Zusammenhang statistisch testen, empfiehlt sich eine grafische Exploration der Daten. Ein Streudiagramm zeigt, wie die einzelnen Werte von Alter und FOMO verteilt sind und ob ein Trend sichtbar ist. Zusätzlich wird eine Regressionslinie eingeblendet, die den geschätzten linearen Zusammenhang visualisiert.
+
+
+```{r, inf1}
+ggplot(data_proc, aes(alter, fomo)) +
+   # Streudiagramm der Rohdaten
+   geom_point(position = position_jitter(width = 0.1)) +
+   # Lineare Trendlinie mit Konfidenzintervall
+   geom_smooth(method = "lm", formula = y ~ x, color = "dodgerblue", fill = "grey80") +
+   # Achsenbeschriftung
+   scale_x_continuous(
+      name = "Alter",
+      limits = c(18, 40),
+      breaks = seq(20, 40, 5)
+   ) +
+   scale_y_continuous(
+      name = "FOMO",
+      limits = c(50, 130),
+      breaks = seq(50, 130, 10)
+   ) +
+   # Titel
+   labs(
+      title = "Streudiagramm: Zusammenhang zwischen FOMO und Alter",
+      subtitle = "Blaue Linie: geschätzter linearer Zusammenhang; graues Band: Unsicherheitsbereich"
+   ) # + theme() # für weitere Anpassung
+
+```
+
+Die Grafik ermöglicht es, erste Hinweise auf die Richtung und Form des Zusammenhangs zu erhalten. Der abfallender Verlauf der Regressionslinie legt einen negativen Zusammenhang nahe.
+
+**Statistische Prüfung**:
+
+Für die Berechnung des Zusammenhangs verwenden wir den Pearson-Korrelationskoeffizienten, da beide Variablen metrisch sind und ein linearer Zusammenhang angenommen wird. Die gerichtete Hypothese wird durch das Argument `alternative = "less"` umgesetzt:
+
+
+```{r, inf2}
+
+r_fomo_alter <- cor_test(
+   data = data_proc,       # Datensatz
+   vars = c(fomo, alter),  # Variablen
+   method = "pearson",     # Pearson-Korrelation
+   alternative = "less"    # Gerichterer Zusammenhang H1: r < 0
+   ) 
+
+print(r_fomo_alter)
+
+```
+
+**Interpretation**:
+
+- Der Korrelationskoeffizient $r$ gibt Richtung und Stärke des Zusammenhangs an. Ein negativer Wert bestätigt die Hypothese, dass mit steigendem Alter der FOMO-Wert sinkt
+- Der *p*-Wert zeigt die Wahrscheinlichkeit, unter der Nullhypothese ($r \geq 0$) einen mindestens so starken negativen Zusammenhang zu beobachten. Ist der *p*-Wert kleiner als das Signifikanzniveau (z.B. $\alpha = .05$), wird die Nullhypothese verworfen und die gerichtete Alternativhypothese angenommen
+
+**Alternative: Spearman-Korrelation**:
+
+Wenn die Voraussetzungen für Pearson (Normalverteilung, Linearität) nicht erfüllt sind, kann die Spearman-Rangkorrelation verwendet werden.
+
+```{r}
+
+cor_test(data_proc, fomo, alter, method = "spearman", alternative = "less") 
+
+```
+
+
+## Mittelwertsvergleiche
+
+Mittelwertsvergleiche dienen dazu, festzustellen, ob sich die durchschnittlichen Werte einer metrischen Variablen (z.B. FOMO) zwischen zwei oder mehr Gruppen signifikant unterscheiden. Die Wahl des statistischen Tests hängt davon ab, wie viele Gruppen miteinander verglichen werden sollen.
+
+### *t*-Test
+
+Der **t-Test für unabhängige Stichproben** prüft, ob sich die Mittelwerte zweier unabhängiger Gruppen signifikant unterscheiden. In unserem Beispiel interessiert uns, ob Personen unterschiedlichen Geschlechts (männlich vs. weiblich) unterschiedliche FOMO-Werte aufweisen.
+
+**Hypothesenformulierung**
+
+- *Nullhypothese* ($\mathcal{H}_0$): Die Mittelwerte der beiden Gruppen sind gleich ($\mu_\text{m} = \mu_\text{w}$).
+- *Alternativhypothese* ($\mathcal{H}_1$): Die Mittelwerte unterscheiden sich ($\mu_\text{m} \neq \mu_\text{w}$).
+
+Zur Vorbereitung müssen wir in unserem Fall einen Subdatensatz erstellen, indem nur die beiden Geschlechter männlich und weiblich enthalten sind. Die eine Person, die sich als divers identifiziert, können wir aufgrund der geringen Stichprobengröße nicht in unsere statistische Analyse aufnehmen.
+
+```{r, inf4}
+table(data_proc$geschlecht)
+
+data_ttest <- subset(data_proc, subset = (geschlecht == "m" | geschlecht == "w"))
+data_ttest$geschlecht <- droplevels(data_ttest$geschlecht)
+levels(data_ttest$geschlecht)
+
+```
+
+**Visuelle Exploration**
+
+Vor der formalen Testung empfiehlt sich eine grafische Darstellung der Verteilungen und Mittelwerte in beiden Gruppen, um ein Gefühl für die Daten zu bekommen. Hierzu eignet sich beispielsweise ein Dichteplot mit eingezeichneten Mittelwerten und den Rohdatenpunkten. Ein Dichteplot zeigt, wie die Werte einer Variablen innerhalb einer Gruppe verteilt sind, und macht sichtbar, ob die Verteilung beispielsweise symmetrisch, schief oder mehrgipflig ist.
+
+```{r}
+
+ggplot(data_ttest, aes(geschlecht, fomo)) +
+   # Dichte
+   stat_slab(scale = 0.5, aes(fill = after_stat(level)), .width = c(.5, 1), show.legend = FALSE) +
+   # Mittelwerts der Geschlechter
+   stat_spike(at = "mean", scale = 0.5, linewidth = 0.8, size = 2) +
+   # rohe Datenpunkte
+   geom_jitter(width = 0.01, alpha = .5) +
+   scale_x_discrete(
+      name = "Geschlecht",
+      labels = c("Männlich", "Weiblich")
+   ) +
+   scale_y_continuous(
+      name = "FOMO",
+      limits = c(50, 130),
+      breaks = seq(50, 130, 10)
+   ) +
+   labs(
+      title = "**Dichteplot der FOMO-Skala nach Geschlecht**",
+      subtitle = "*Der innere graue Bereich zeigt den Interquartilsbereich (IQR), der die mittleren 50 % der Werte umfasst und damit die Streuung und Symmetrie der Verteilung innerhalb jeder Gruppe verdeutlicht.*"  
+      ) +
+   scale_fill_manual(values = c("grey90", "grey70"))
+
+```
+
+Diese Darstellung erlaubt es, die Verteilung, Streuung und Lage der Mittelwerte in beiden Gruppen direkt zu vergleichen.
+
+**Voraussetzungen des *t*-Tests**
+
+Vor der Durchführung des t-Tests sollten die Voraussetzungen geprüft werden:
+
+1. Normalverteilung der abhängigen Variable in beiden Gruppen (z.B. Shapiro-Wilk-Test).
+2. Varianzhomogenität (Gleichheit der Varianzen, z.B. Levene-Test).
+3. Unabhängigkeit der Beobachtungen (durch Studiendesign gegeben).
+
+Wir können die Voraussetzungen der Normalverteilungen beispielsweise mit einem Shapiro-Test überprüfen. Wenn der *p*-Wert nicht statistisch signifikant ist, behalten wir die Nullhypothese, dass die Daten in der Population normalverteilt sind bei.
+
+```{r}
+
+data_ttest |>
+   group_by(geschlecht) |>
+   shapiro_test(fomo)
+
+```
+
+Beide p-Werte aus dem Shapiro-Wilk-Test sind in diesem Beispiel nicht statistisch signifikant, das bedeutet, dass wir die Nullhypothese der Normalverteilung beibehalten und davon ausgehen können, dass die Normalverteilungsannahme für die FOMO-Werte in beiden Geschlechtsgruppen nicht verletzt ist.
+
+
+Die Annahme der Varianzhomogenität (Homoskedastizität) überprüfen wir mit dem Levene-Test. Auch hier gilt: Die Nullhypothese des Tests besagt, dass die Varianzen in den Gruppen gleich sind. Ein nicht signifikanter p-Wert spricht dafür, dass kein Hinweis auf einen Unterschied der Varianzen vorliegt, sodass wir die Homoskedastizitätsannahme als erfüllt ansehen können.
+
+
+```{r}
+levene_test(data_ttest, fomo ~ geschlecht)
+
+```
+
+Da auch der Levene-Test in diesem Beispiel einen nicht signifikanten p-Wert liefert, gehen wir davon aus, dass die Voraussetzung der Varianzhomogenität nicht verletzt ist. Damit sind die zentralen Voraussetzungen für die Durchführung eines t-Tests für unabhängige Stichproben erfüllt
+
+**Statistischer Test**
+
+```{r}
+tt_geschl_fomo <- t_test(
+   data = data_ttest,            # Datensatz
+   formula = fomo ~ geschlecht,  # Formel
+   alternative = "two.sided",    # zweiseitiger Test (H0: m1 - m2 = 0)
+   paired = FALSE,               # Test für unabhängige Stichproben
+   ref.group = "w",               # Referenzgruppe: w - m
+   detailed = TRUE
+   )
+
+print(tt_geschl_fomo)
+```
+
+- *t*-Wert: Teststatistik, die das Verhältnis des Mittelwertsunterschieds zur Streuung beschreibt.
+- Freiheitsgrade (*df*): Anzahl der unabhängigen Informationen.
+- *p*-Wert: Gibt an, wie wahrscheinlich ein mindestens so großer Unterschied unter der Nullhypothese ist.
+
+Wir sehen, dass weibliche Personen im Mittel einen `r round(tt_geschl_fomo$estimate, 2)` Punkte größere FOMO Wert auweisen als männliche Personen. Der dazugehörige *t*-Wert von *t*(`r as.integer(tt_geschl_fomo$df)`)=`r round(tt_geschl_fomo$statistic, 2)` ist mit einem *p*-Wert von `r insight::format_p(tt_geschl_fomo$p)` mit einem $\alpha$-Niveaus von 5% statistisch nicht bedeutsam. Wir können also die Nullhypothese, dass der FOMO Mittelwert von männlichen und weiblichen Perosnen sich unterscheiden, **nicht** verwerfen. 
+
+Wichtig ist jedoch zu betonen, dass ein nicht signifikanter p-Wert nicht automatisch bedeutet, dass die Mittelwerte in der Population tatsächlich gleich sind. Die Schlussfolgerung, dass Gleichheit besteht, ist statistisch nicht zulässig, da ein Hypothesentest bei nicht signifikantem Ergebnis lediglich anzeigt, dass die Daten keinen ausreichenden Beleg für einen Unterschied liefern – er kann jedoch nicht bestätigen, dass tatsächlich kein Unterschied existiert.
+
+**Effektstärke: Cohen’s *d***
+
+Die Effektstärke gibt die praktische Relevanz des Unterschieds an. Cohen’s *d* ist ein standardisiertes Maß für den Mittelwertsunterschied:
+
+```{r}
+cohens_d(data_ttest, fomo ~ geschlecht)
+
+```
+
+- $d = 0.2$: kleiner Effekt
+- $d = 0.5$: mittlerer Effekt
+- $d = 0.8$: großer Effekt
+
+Eine Effektstärke von *d* = `r cohens_d(data_ttest, fomo ~ geschlecht)$effsize` bedeutet, dass sich die beiden Gruppen im Mittel um `r cohens_d(data_ttest, fomo ~ geschlecht)$effsize` Standardabweichungen unterscheiden. Es ist hier also maximal von einem kleinem Effekt auszugehen.
+
+
+### ANOVA
+
+Wenn mehr als zwei Gruppen verglichen werden sollen, verwendet man die Varianzanalyse (*ANOVA*). Sie prüft, ob sich mindestens ein Gruppenmittelwert signifikant von den anderen unterscheidet.
+
+**Hypothesenformulierung**
+
+- Nullhypothese ($\mathcal{H}_0$): Alle Gruppenmittelwerte sind gleich ($\mu_1 = \mu_2 = \mu_3$).
+- Alternativhypothese ($\mathcal{H}_1$): Mindestens ein Gruppenmittelwert unterscheidet sich.
+
+**Visuelle Exploration**
+
+Auch hier empfiehlt sich eine grafische Darstellung der Verteilung der FOMO-Werte in den verschiedenen Gruppen (z.B. nach Verfügbarkeitserwartung):
+
+```{r}
+ggplot(data_proc, aes(verfuegbarkeitserwartung, fomo)) +
+   # Dichteplot
+   stat_slab(scale = 0.5, aes(fill = after_stat(level)), .width = c(.5, 1), show.legend = FALSE) +
+   # Mittelwerts der Geschlechter
+   stat_spike(at = "mean", scale = 0.5, linewidth = 0.8, size = 2) +
+   # Datenpunkte
+   geom_jitter(width = 0.01, alpha = .5) +
+   scale_y_continuous(
+      name = "FOMO",
+      limits = c(50, 130),
+      breaks = seq(50, 130, 10)
+   ) +
+   scale_x_discrete(
+      name = "Verfügbarkeitserwartung",
+      labels = c("Niedrig", "Mittel", "Hoch")
+   ) +
+   scale_fill_manual(values = c("grey90", "grey70", NA))
+
+```
+
+Diese Grafik zeigt die Verteilung, Streuung und Mittelwerte der FOMO-Werte in allen drei Gruppen.
+
+**Voraussetzungen der ANOVA**
+
+1. Normalverteilung der abhängigen Variable in allen Gruppen.
+2. Varianzhomogenität (Gleichheit der Fehlervarianzen).
+3. Unabhängigkeit der Beobachtungen.
+
+**Statistischer Test**
+
+```{r, inf3}
+
+aov_test <- anova_test(data_proc, fomo ~ verfuegbarkeitserwartung, detailed = TRUE, effect.size = c("ges", "pes"))
+print(aov_test)
+
+```
+
+- *F*-Wert: Verhältnis der Varianz zwischen den Gruppen zur Varianz innerhalb der Gruppen.
+- Freiheitsgrade (*df*): Anzahl der Gruppen minus eins (zwischen), Gesamtstichprobe minus Gruppenanzahl (innerhalb).
+- *p*-Wert: Gibt an, wie wahrscheinlich ein mindestens so großer Unterschied unter der Nullhypothese ist.
+
+Die ANOVA ergibt einen F-Wert von 13,86 bei 2 und 133 Freiheitsgraden. Der zugehörige p-Wert beträgt 3,4 × 10⁻⁶ und liegt damit deutlich unter dem üblichen Signifikanzniveau von 5 %. Das bedeutet, dass wir die Nullhypothese der Gleichheit der Mittelwerte ablehnen können. Es gibt also einen statistisch bedeutsamen Unterschied im durchschnittlichen FOMO-Wert zwischen mindestens zwei Stufen der Verfügbarkeitserwartung. Die partielle Eta-Quadrat ($\eta^2_\mathrm{ges}$) von 0,172 weist zudem auf einen mittleren Effekt hin, das heißt, ein relevanter Anteil der Gesamtvarianz der FOMO-Skala wird durch die Verfügbarkeitserwartung erklärt.
+
+
+**Post-hoc-Kontraste (Tukey-Test)**
+
+Da die ANOVA nur zeigt, dass irgendwo ein Unterschied zwischen den Gruppen besteht, führen wir zur genaueren Bestimmung der Unterschiede Post-hoc-Tests durch. Der Tukey-Test vergleicht alle möglichen Gruppenpaare miteinander und kontrolliert das Fehlerniveau für multiples Testen.
+
+
+```{r}
+tab_df(tukey_hsd(data_proc, fomo ~ verfuegbarkeitserwartung))
+
+```
+
+Die Ergebnisse zeigen:
+
+- Zwischen den Gruppen „niedrig“ und „mittel“ besteht kein signifikanter Unterschied im FOMO-Mittelwert (*p* = 0.94).
+- Zwischen „niedrig“ und „hoch“ sowie zwischen „mittel“ und „hoch“ bestehen jeweils signifikante Unterschiede (*p* < .001). In beiden Fällen ist der FOMO-Wert bei Personen mit hoher Verfügbarkeitserwartung im Mittel um etwa 14 Punkte höher als in den anderen Gruppen.
+
+
+
+
