@@ -149,10 +149,10 @@ Wir sehen, dass zwei Proband:innen den kompletten Fragebogen nicht ausgefüllt h
 
 ```{r}
 # Anzahl NAs pro Person (Zeile)
-na_count_per_person <- data_brauchbar |> # Datensatz auswählen
-  mutate(na_count = rowSums(is.na(data_brauchbar))) |> # NAs pro Reihe 
-  select(id, na_count) |> # Nach der ID-Nummer darstellen
-  filter(na_count > 0) |> # Nur Personen, die mind. 1 NA haben
+na_count_per_person <- data_brauchbar %>% # Datensatz auswählen
+  mutate(na_count = rowSums(is.na(data_brauchbar))) %>% # NAs pro Reihe 
+  select(id, na_count) %>% # Nach der ID-Nummer darstellen
+  filter(na_count > 0) %>% # Nur Personen, die mind. 1 NA haben
   arrange(desc(na_count))  # sortiert nach Anzahl NAs (absteigend)
 
 # Ausgabe anzeigen

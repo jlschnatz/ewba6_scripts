@@ -135,11 +135,11 @@ Mit dem Argument type kann festgelegt werden, welche Kennwerte angezeigt werden 
 
 
 ```{r, descr4}
-data_proc |>
-   select(fomo, verfuegbarkeitserwartung) |> # relevante Variablen selektieren
-   group_by(verfuegbarkeitserwartung) |> # Gruppierung nach kategorieller Variable
-   get_summary_stats(type = "mean_sd") |> # Mittelwert und Standardabweichung
-   select(-variable) |>
+data_proc %>%
+   select(fomo, verfuegbarkeitserwartung) %>% # relevante Variablen selektieren
+   group_by(verfuegbarkeitserwartung) %>% # Gruppierung nach kategorieller Variable
+   get_summary_stats(type = "mean_sd") %>% # Mittelwert und Standardabweichung
+   select(-variable) %>%
    tab_df(col.header = c("Verfügbarkeitserwartung", "N", "M", "SD"), digits = 1) # Rundung auf eine Nachkommastelle
 ```
 
@@ -294,8 +294,8 @@ Wir können die Voraussetzungen der Normalverteilungen beispielsweise mit einem 
 
 ```{r}
 
-data_ttest |>
-   group_by(geschlecht) |>
+data_ttest %>%
+   group_by(geschlecht) %>%
    shapiro_test(fomo)
 
 ```
