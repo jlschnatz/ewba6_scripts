@@ -18,7 +18,8 @@ format:
       language: de    
       lang: de          
       number-sections: true      
-      self-contained: true       
+      self-contained: true   
+      code-overflow: wrap    
       code-fold: false            
       code-tools: false           
       highlight-style: github    
@@ -90,18 +91,36 @@ data_roh <- read.csv("name-des-datensatzes.csv") # Datensatz in R laden
 Als erstes betrachten wir, welche Variablen alle existieren. Hierfür nutzen wir den colnames()-Befehl, der uns die Spaltennamen anzeigt. Im nächsten Schritt speichern wir einen 2. Datensatz, in dem die Variablen, die uns nicht interessieren (z.B. die IDs in SosciSurvey, die benötige Zeit, etc.) herauslöschen. Wir wählen hier die Proband:innen-Nummer, die demografischen Variablen (fangen alle mit "EI" an), die Items unseres Fragebogens (fangen alle mit "K" an) und die erwartete Verfügbarkeit in der Freundesgruppe ("VE01") aus, ihr solltet in eurer Arbeit alle Variablen auswählen, die wichtig für eure Auswertung sind. Wenn ihr kein Muster in der Benennung der Variablennamen habt (also EI bzw. K), könnt ihr auch die Ergebnisse des colnames()-Befehls nutzen.
 
 ```{r}
-## Namen abfragen:
 colnames(data_roh)
-
-## Möglichkeit 1 (mit Mustern bei den Variablennamen):
-data_brauchbar <- select(data_roh, c(CASE, matches("EI\\d{2}"), matches("K\\d{3}_\\d{2}"), VE01))
-
-## Möglichkeit 2 (ohne Muster - manuelle Auswahl):
-# Spaltennamen augeben lassen über colnames()
-data_brauchbar <- data_roh[, c(1, 7:44, 64)] # Spalte 1 und 7 bis 44 und 64 auswählen
 ```
 
-Im nächsten Schritt wollen wir die Variablen so umbenennen, dass wir sie im nächsten Schritt einfacher nutzen können. Die notwendige Informationen sind im Codebook enthalten, welches ihr ebenfalls bei SosciSurvey herunterladen könnt. Es macht Sinn, die Namen auch inhaltlich zu benennen, in unserem Beispiel geht es um FOMO - Fear of missing out.
+::: {.panel-tabset}
+
+### Möglichkeit 1
+
+Wir können einerseits die Spalten direkt mit ihrem Namen ansprechen und auswählen:
+
+```{r}
+sel_vars <- c('CASE', 'EI05', 'EI01', 'EI02_01', 'K101_01', 'K101_02', 'K101_03', 'K101_04', 'K101_06', 'K101_08', 'K101_09', 'K101_10', 'K101_05', 'K101_11', 'K201_01', 'K201_02', 'K201_03', 'K201_05', 'K201_06', 'K301_01', 'K301_02', 'K301_03', 'K301_04', 'K301_05', 'K301_06', 'K301_07', 'K301_08', 'K301_09', 'K401_01', 'K401_06', 'K401_02', 'K401_03', 'K401_04', 'K401_05', 'K501_01', 'K501_06', 'K501_03', 'K501_04', 'K501_05', 'VE01')
+
+data_brauchbar <- data_roh[, sel_vars]
+
+```
+
+### Möglichkeit 2
+
+Alternativ können Spalten auch über ihren Index (steht bei dem Output von `colnames()` links) auswählen.
+
+```{r}
+
+sel_vars <- c(1, 7:44, 64)
+data_brauchbar <- data_roh[, sel_vars] 
+
+```
+
+:::
+
+Im nächsten Schritt wollen wir die Variablen so umbenennen, dass wir sie im nächsten Schritt einfacher nutzen können. Die notwendige Informationen sind im Codebook enthalten, welches ihr ebenfalls bei SosciSurvey herunterladen könnt. Es macht Sinn, die Namen auch inhaltlich zu benennen, in unserem Beispiel geht es um FOMO (Fear of missing out)
 
 ```{r}
 ## Neue Spaltennamen:
@@ -136,7 +155,6 @@ In diesem Fall sind 95 fehlende Werte vorhanden. Um die fehlenden Werte genauer 
 
 ```{r}
 #| fig-align: center
-
 
 naniar::gg_miss_case(
   x = data_brauchbar, 
