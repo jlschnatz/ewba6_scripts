@@ -22,7 +22,7 @@ format:
       code-overflow: wrap    
       code-fold: false            
       code-tools: false           
-      highlight-style: github    
+      highlight-style: printing   
       html-math-method: mathjax  
       fig-align: center          
       fig-cap-location: bottom   
@@ -53,6 +53,7 @@ library(naniar)
 library(psych)
 library(readr)
 library(sjmisc)
+library(kableExtra)
 
 data_roh <- read.csv("data/raw/data_ewba6_raw_v2.csv") # Datensatz in R laden
 
@@ -88,7 +89,7 @@ data_roh <- read.csv("name-des-datensatzes.csv") # Datensatz in R laden
 
 # Überblick über die Daten erhalten
 
-Als erstes betrachten wir, welche Variablen alle existieren. Hierfür nutzen wir den colnames()-Befehl, der uns die Spaltennamen anzeigt. Im nächsten Schritt speichern wir einen 2. Datensatz, in dem die Variablen, die uns nicht interessieren (z.B. die IDs in SosciSurvey, die benötige Zeit, etc.) herauslöschen. Wir wählen hier die Proband:innen-Nummer, die demografischen Variablen (fangen alle mit "EI" an), die Items unseres Fragebogens (fangen alle mit "K" an) und die erwartete Verfügbarkeit in der Freundesgruppe ("VE01") aus, ihr solltet in eurer Arbeit alle Variablen auswählen, die wichtig für eure Auswertung sind. Wenn ihr kein Muster in der Benennung der Variablennamen habt (also EI bzw. K), könnt ihr auch die Ergebnisse des colnames()-Befehls nutzen.
+Als erstes betrachten wir, welche Variablen alle existieren. Hierfür nutzen wir den `colnames()`-Befehl, der uns die Spaltennamen anzeigt. Im nächsten Schritt speichern wir einen 2. Datensatz, in dem die Variablen, die uns nicht interessieren (z.B. die IDs in SosciSurvey, die benötige Zeit, etc.) herauslöschen. Wir wählen hier die Proband:innen-Nummer, die demografischen Variablen (fangen alle mit "EI" an), die Items unseres Fragebogens (fangen alle mit "K" an) und die erwartete Verfügbarkeit in der Freundesgruppe ("VE01") aus, ihr solltet in eurer Arbeit alle Variablen auswählen, die wichtig für eure Auswertung sind. Wenn ihr kein Muster in der Benennung der Variablennamen habt (also EI bzw. K), könnt ihr auch die Ergebnisse des colnames()-Befehls nutzen.
 
 ```{r}
 colnames(data_roh)
@@ -151,38 +152,30 @@ anyNA(data_brauchbar) # TRUE -> das Umlabeln hat also funktioniert
 sum(is.na(data_brauchbar)) # 95 fehlende Angaben
 ```
 
-In diesem Fall sind 95 fehlende Werte vorhanden. Um die fehlenden Werte genauer zu explorieren, sollte am Rande das naniar-Package erwähnt werden, da es einige nützliche Funktionen diesbezüglich enthält. Wir können zum Beispiel über die cases (Proband:innen) hinweg die prozentuale Häufigkeit an Missings visualisieren.
+In diesem Fall sind 95 fehlende Werte vorhanden. Um die fehlenden Werte genauer zu explorieren, sollte am Rande das naniar-Package erwähnt werden, da es einige nützliche Funktionen diesbezüglich enthält. Wir können zum Beispiel über die Cases (Proband:innen) hinweg die prozentuale Häufigkeit an Missings berechnen.
 
 ```{r}
-#| fig-align: center
+#| output: false
 
-naniar::gg_miss_case(
-  x = data_brauchbar, 
-  show_pct = TRUE, 
-  order_cases = FALSE
-  )
-```
+na_count_per_person <- miss_case_summary(data_brauchbar) %>% 
+filter(pct_miss > 0) # nur Personen die NAs haben 
 
-Wir sehen, dass zwei Proband:innen den kompletten Fragebogen nicht ausgefüllt hat und mehrere Personen einzelne Fragen nicht beantwortet haben. Dies gucken wir uns nochmal genauer an:
-
-```{r}
-# Anzahl NAs pro Person (Zeile)
-na_count_per_person <- data_brauchbar %>% # Datensatz auswählen
-  mutate(na_count = rowSums(is.na(data_brauchbar))) %>% # NAs pro Reihe 
-  select(id, na_count) %>% # Nach der ID-Nummer darstellen
-  filter(na_count > 0) %>% # Nur Personen, die mind. 1 NA haben
-  arrange(desc(na_count))  # sortiert nach Anzahl NAs (absteigend)
-
-# Ausgabe anzeigen
 print(na_count_per_person)
+
 ```
 
-Hier sehen wir nun, dass 2 Proband:innen 35 Items nicht beantwortet haben und 17 Personen mind. 1 NA haben. Die 19 Personen sollen aufgrund der Einfachheit mit na.omit() ausgeschlossen werden.
+
+```{r}
+#| echo: false
+kbl(na_count_per_person, caption = "Anzahl an NAs pro Person")
+```
+
+Hier sehen wir nun, dass 2 Proband:innen 35 Items nicht beantwortet haben und 17 Personen mind. 1 NA haben. Die 19 Personen sollen aufgrund der Einfachheit mit `na.omit()` ausgeschlossen werden.
 
 ::: {.callout-warning title="Disclaimer zu fehlenden Werten"}
 Es sollte zumindest am Rande erwähnt werden, dass die Funktion `na.omit()` sehr mächtig ist und nur mit Vorsicht verwendet werden sollte. Ohne weitere Überlegungen NAs auszuschließen, deren Fehlen möglicherweise nicht zufällig ist, sondern durch andere (nicht)-erhobene Variablen bedingt sind, kann zu Verzerrungen führen.
 
-Für dieses Seminar ist es aber ok Personen mit fehlenden Werten auszuschließen. Falls ihr euch mehr mit dem Thema NAs auseinandersetzen wollt, hier ein spannender [Blogpost](https://www.iriseekhout.com/post/2022-06-28-missingdatamechanisms/).
+Für dieses Seminar ist es aber in Ordnung Personen mit fehlenden Werten auszuschließen. Falls ihr euch mehr mit dem Thema NAs auseinandersetzen wollt, hier ein spannender [Blogpost](https://www.iriseekhout.com/post/2022-06-28-missingdatamechanisms/).
 :::
 
 ```{r}
@@ -222,7 +215,7 @@ table(data_ohneNA$verfuegbarkeitserwartung)
 
 ```
 
-Bevor wir einen summierten FOMO-Wert berechnen können, müssen wir im Codebook schauen, ob es invertierte Items gibt, d.h. Fragen bei denen hohe Werte (entgegen des inhaltlichen Zusammenhangs) für weniger FOMO spricht. Dies ist für die Items 10, 24, 29, 30, 32 der Fall. Wir können diese Items mit dem `rec(..., rec = "rev")` Befehl des _sjmisc_-Paket sehr einfach invertieren. Danach können wir einen Gesamtmittelwert "FOMO" für jede Person berechnen, wofür `rowMeans()`-Befehl nutzen.
+Bevor wir einen summierten FOMO-Wert berechnen können, müssen wir im Codebook schauen, ob es invertierte Items gibt, d.h. Fragen bei denen hohe Werte (entgegen des inhaltlichen Zusammenhangs) für weniger FOMO spricht. Dies ist für die Items 10, 24, 29, 30, 32 der Fall. Wir können diese Items mit dem `rec(..., rec = "rev")` Befehl des _sjmisc_-Paket sehr einfach invertieren. 
 
 ```{r}
 # Invertierte Items umkodieren (1 <-> 4, 2 <-> 3 entspricht: 5 - Wert)
@@ -233,8 +226,13 @@ data_ohneNA$fomo29_inv <- rec(data_ohneNA$fomo29, rec = "rev")
 data_ohneNA$fomo30_inv <- rec(data_ohneNA$fomo30, rec = "rev")
 data_ohneNA$fomo32_inv <- rec(data_ohneNA$fomo32, rec = "rev")
 
+```
 
-# Liste der zu summierenden Items (inkl. invertierter Items)
+Danach können wir einen Gesamtmittelwert "FOMO" für jede Person berechnen, wofür wir den `rowMeans()`-Befehl nutzen.
+
+```{r}
+
+# Liste der Items (inkl. invertierter Items)
 fomo_items <- c(
   paste0("fomo", 1:9),
   "fomo10_inv",
@@ -248,9 +246,10 @@ fomo_items <- c(
   paste0("fomo", 33:35)
 )
 
-# Summenwert berechnen
+# Mittelwert berechnen
 data_ohneNA$fomo <- rowMeans(data_ohneNA[, fomo_items])
 head(data_ohneNA$fomo)
+
 
 ```
 
