@@ -34,7 +34,7 @@ format:
 
 # Einleitung
 
-In diesem Skript geht es um die Vorbereitungen für die Analysen, die ihr im Rahmen eurer Hausarbeit rechnen sollt. D.h. wir bereiten die Daten so auf, dass sie mithilfe des 2. Skripts ausgewertet werden können. Dies machen wir anhand eines Beispieldatensatzes, der eurem ähnelt und auch die gleichen Probleme und Fallstricke beinhaltet, sodass ihr im besten Fall die Skripte kopieren könnt und nur noch an eure Studien anpassen müsst.
+In diesem Skript geht es um die Vorbereitungen für die Analysen, die ihr im Rahmen eurer Hausarbeit rechnen sollt. Das heißt, wir bereiten die Daten so auf, dass sie mithilfe des 2. Skripts ausgewertet werden können. Dies machen wir anhand eines Beispieldatensatzes, der eurem ähnelt und auch die gleichen Probleme und Fallstricke beinhaltet, sodass ihr im besten Fall die Skripte kopieren könnt und nur noch an eure Studien anpassen müsst.
 
 # Daten in R laden
 
@@ -204,28 +204,17 @@ table(data_ohneNA$verfuegbarkeitserwartung)
 
 ```
 
-Bevor wir einen summierten FOMO-Wert berechnen können, müssen wir im Codebook gucken, ob es invertierte Items gibt, d.h. Fragen bei denen hohe Werte (entgegen des inhaltlichen Zusammenhangs) für weniger FOMO spricht. Dies ist für die Items 10, 24, 29, 30, 32 der Fall. Danach können wir einen Gesamtwert "FOMO" berechnen, wofür rowSums-Befehlt nutzen.
+Bevor wir einen summierten FOMO-Wert berechnen können, müssen wir im Codebook schauen, ob es invertierte Items gibt, d.h. Fragen bei denen hohe Werte (entgegen des inhaltlichen Zusammenhangs) für weniger FOMO spricht. Dies ist für die Items 10, 24, 29, 30, 32 der Fall. Wir können diese Items mit dem `rec(..., rec = "rev")` Befehl des _sjmisc_-Paket sehr einfach invertieren. Danach können wir einen Gesamtmittelwert "FOMO" für jede Person berechnen, wofür `rowMeans()`-Befehl nutzen.
 
 ```{r}
 # Invertierte Items umkodieren (1 <-> 4, 2 <-> 3 entspricht: 5 - Wert)
-data_ohneNA$fomo10_inv <- 5 - data_ohneNA$fomo10
-data_ohneNA$fomo24_inv <- 5 - data_ohneNA$fomo24
-data_ohneNA$fomo29_inv <- 5 - data_ohneNA$fomo29
-data_ohneNA$fomo30_inv <- 5 - data_ohneNA$fomo30
-data_ohneNA$fomo32_inv <- 5 - data_ohneNA$fomo32
 
-# Oder gleichzeitig durch
-names_inverse_items <- paste0("fomo", c(10, 24, 29, 30, 32))
-print(names_inverse_items)
-new_names <- paste0(names_inverse_items, "_inv")
-print(new_names)
+data_ohneNA$fomo10_inv <- rec(data_ohneNA$fomo10, rec = "rev")
+data_ohneNA$fomo24_inv <- rec(data_ohneNA$fomo24, rec = "rev")
+data_ohneNA$fomo29_inv <- rec(data_ohneNA$fomo29, rec = "rev")
+data_ohneNA$fomo30_inv <- rec(data_ohneNA$fomo30, rec = "rev")
+data_ohneNA$fomo32_inv <- rec(data_ohneNA$fomo32, rec = "rev")
 
-data_ohneNA[, new_names] <- lapply(
-  X = data_ohneNA[, names_inverse_items], 
-  # Neue Spalten aus `new_names`
-  FUN = function(x) sjmisc::rec(x, rec = "rev") 
-  # rec() Funktion des scmisc-Pakets mit rec = "rev" für reverse
-  )
 
 # Liste der zu summierenden Items (inkl. invertierter Items)
 fomo_items <- c(
@@ -242,7 +231,7 @@ fomo_items <- c(
 )
 
 # Summenwert berechnen
-data_ohneNA$fomo <- rowSums(data_ohneNA[, fomo_items])
+data_ohneNA$fomo <- rowMeans(data_ohneNA[, fomo_items])
 head(data_ohneNA$fomo)
 
 ```
@@ -259,8 +248,6 @@ write_csv(data_ohneNA, "data/proc/daten_fomo_processed.csv")
 
 
 # Verwendete Pakete
-
-
 
 ```{r}
 sessioninfo::session_info(pkgs = "attached")

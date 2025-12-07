@@ -2356,10 +2356,10 @@ vertical-align: -.125em;
 <p>Wir sehen, dass zwei Proband:innen den kompletten Fragebogen nicht ausgefüllt hat und mehrere Personen einzelne Fragen nicht beantwortet haben. Dies gucken wir uns nochmal genauer an:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Anzahl NAs pro Person (Zeile)</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>na_count_per_person <span class="ot">&lt;-</span> data_brauchbar <span class="sc">|&gt;</span> <span class="co"># Datensatz auswählen</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">na_count =</span> <span class="fu">rowSums</span>(<span class="fu">is.na</span>(data_brauchbar))) <span class="sc">|&gt;</span> <span class="co"># NAs pro Reihe </span></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(id, na_count) <span class="sc">|&gt;</span> <span class="co"># Nach der ID-Nummer darstellen</span></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(na_count <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">|&gt;</span> <span class="co"># Nur Personen, die mind. 1 NA haben</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>na_count_per_person <span class="ot">&lt;-</span> data_brauchbar <span class="sc">%&gt;%</span> <span class="co"># Datensatz auswählen</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">na_count =</span> <span class="fu">rowSums</span>(<span class="fu">is.na</span>(data_brauchbar))) <span class="sc">%&gt;%</span> <span class="co"># NAs pro Reihe </span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(id, na_count) <span class="sc">%&gt;%</span> <span class="co"># Nach der ID-Nummer darstellen</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(na_count <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span> <span class="co"># Nur Personen, die mind. 1 NA haben</span></span>
 <span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(na_count))  <span class="co"># sortiert nach Anzahl NAs (absteigend)</span></span>
 <span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Ausgabe anzeigen</span></span>
@@ -2452,52 +2452,36 @@ niedrig  mittel    hoch
      37      60      39 </code></pre>
 </div>
 </div>
-<p>Bevor wir einen summierten FOMO-Wert berechnen können, müssen wir im Codebook gucken, ob es invertierte Items gibt, d.h. Fragen bei denen hohe Werte (entgegen des inhaltlichen Zusammenhangs) für weniger FOMO spricht. Dies ist für die Items 10, 24, 29, 30, 32 der Fall. Danach können wir einen Gesamtwert “FOMO” berechnen, wofür rowSums-Befehlt nutzen.</p>
+<p>Bevor wir einen summierten FOMO-Wert berechnen können, müssen wir im Codebook schauen, ob es invertierte Items gibt, d.h. Fragen bei denen hohe Werte (entgegen des inhaltlichen Zusammenhangs) für weniger FOMO spricht. Dies ist für die Items 10, 24, 29, 30, 32 der Fall. Wir können diese Items mit dem <code>rec(..., rec = &quot;rev&quot;)</code> Befehl des <em>sjmisc</em>-Paket sehr einfach invertieren. Danach können wir einen Gesamtmittelwert “FOMO” für jede Person berechnen, wofür <code>rowMeans()</code>-Befehl nutzen.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Invertierte Items umkodieren (1 &lt;-&gt; 4, 2 &lt;-&gt; 3 entspricht: 5 - Wert)</span></span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>data_ohneNA<span class="sc">$</span>fomo10_inv <span class="ot">&lt;-</span> <span class="dv">5</span> <span class="sc">-</span> data_ohneNA<span class="sc">$</span>fomo10</span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>data_ohneNA<span class="sc">$</span>fomo24_inv <span class="ot">&lt;-</span> <span class="dv">5</span> <span class="sc">-</span> data_ohneNA<span class="sc">$</span>fomo24</span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>data_ohneNA<span class="sc">$</span>fomo29_inv <span class="ot">&lt;-</span> <span class="dv">5</span> <span class="sc">-</span> data_ohneNA<span class="sc">$</span>fomo29</span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>data_ohneNA<span class="sc">$</span>fomo30_inv <span class="ot">&lt;-</span> <span class="dv">5</span> <span class="sc">-</span> data_ohneNA<span class="sc">$</span>fomo30</span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>data_ohneNA<span class="sc">$</span>fomo32_inv <span class="ot">&lt;-</span> <span class="dv">5</span> <span class="sc">-</span> data_ohneNA<span class="sc">$</span>fomo32</span>
-<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Oder gleichzeitig durch</span></span>
-<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>names_inverse_items <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">&quot;fomo&quot;</span>, <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">24</span>, <span class="dv">29</span>, <span class="dv">30</span>, <span class="dv">32</span>))</span>
-<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(names_inverse_items)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>data_ohneNA<span class="sc">$</span>fomo10_inv <span class="ot">&lt;-</span> <span class="fu">rec</span>(data_ohneNA<span class="sc">$</span>fomo10, <span class="at">rec =</span> <span class="st">&quot;rev&quot;</span>)</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>data_ohneNA<span class="sc">$</span>fomo24_inv <span class="ot">&lt;-</span> <span class="fu">rec</span>(data_ohneNA<span class="sc">$</span>fomo24, <span class="at">rec =</span> <span class="st">&quot;rev&quot;</span>)</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>data_ohneNA<span class="sc">$</span>fomo29_inv <span class="ot">&lt;-</span> <span class="fu">rec</span>(data_ohneNA<span class="sc">$</span>fomo29, <span class="at">rec =</span> <span class="st">&quot;rev&quot;</span>)</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>data_ohneNA<span class="sc">$</span>fomo30_inv <span class="ot">&lt;-</span> <span class="fu">rec</span>(data_ohneNA<span class="sc">$</span>fomo30, <span class="at">rec =</span> <span class="st">&quot;rev&quot;</span>)</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>data_ohneNA<span class="sc">$</span>fomo32_inv <span class="ot">&lt;-</span> <span class="fu">rec</span>(data_ohneNA<span class="sc">$</span>fomo32, <span class="at">rec =</span> <span class="st">&quot;rev&quot;</span>)</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Liste der zu summierenden Items (inkl. invertierter Items)</span></span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>fomo_items <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(<span class="st">&quot;fomo&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>),</span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;fomo10_inv&quot;</span>,</span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(<span class="st">&quot;fomo&quot;</span>, <span class="dv">11</span><span class="sc">:</span><span class="dv">23</span>),</span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;fomo24_inv&quot;</span>,</span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(<span class="st">&quot;fomo&quot;</span>, <span class="dv">25</span><span class="sc">:</span><span class="dv">28</span>),</span>
+<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;fomo29_inv&quot;</span>,</span>
+<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;fomo30_inv&quot;</span>,</span>
+<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;fomo31&quot;</span>,</span>
+<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;fomo32_inv&quot;</span>,</span>
+<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(<span class="st">&quot;fomo&quot;</span>, <span class="dv">33</span><span class="sc">:</span><span class="dv">35</span>)</span>
+<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-24"><a href="#cb28-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Summenwert berechnen</span></span>
+<span id="cb28-25"><a href="#cb28-25" aria-hidden="true" tabindex="-1"></a>data_ohneNA<span class="sc">$</span>fomo <span class="ot">&lt;-</span> <span class="fu">rowMeans</span>(data_ohneNA[, fomo_items])</span>
+<span id="cb28-26"><a href="#cb28-26" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(data_ohneNA<span class="sc">$</span>fomo)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] &quot;fomo10&quot; &quot;fomo24&quot; &quot;fomo29&quot; &quot;fomo30&quot; &quot;fomo32&quot;</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>new_names <span class="ot">&lt;-</span> <span class="fu">paste0</span>(names_inverse_items, <span class="st">&quot;_inv&quot;</span>)</span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(new_names)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] &quot;fomo10_inv&quot; &quot;fomo24_inv&quot; &quot;fomo29_inv&quot; &quot;fomo30_inv&quot; &quot;fomo32_inv&quot;</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>data_ohneNA[, new_names] <span class="ot">&lt;-</span> <span class="fu">lapply</span>(</span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">X =</span> data_ohneNA[, names_inverse_items], </span>
-<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Neue Spalten aus `new_names`</span></span>
-<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">FUN =</span> <span class="cf">function</span>(x) sjmisc<span class="sc">::</span><span class="fu">rec</span>(x, <span class="at">rec =</span> <span class="st">&quot;rev&quot;</span>) </span>
-<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># rec() Funktion des scmisc-Pakets mit rec = &quot;rev&quot; für reverse</span></span>
-<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Liste der zu summierenden Items (inkl. invertierter Items)</span></span>
-<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>fomo_items <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(<span class="st">&quot;fomo&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>),</span>
-<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;fomo10_inv&quot;</span>,</span>
-<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(<span class="st">&quot;fomo&quot;</span>, <span class="dv">11</span><span class="sc">:</span><span class="dv">23</span>),</span>
-<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;fomo24_inv&quot;</span>,</span>
-<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(<span class="st">&quot;fomo&quot;</span>, <span class="dv">25</span><span class="sc">:</span><span class="dv">28</span>),</span>
-<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;fomo29_inv&quot;</span>,</span>
-<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;fomo30_inv&quot;</span>,</span>
-<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;fomo31&quot;</span>,</span>
-<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;fomo32_inv&quot;</span>,</span>
-<span id="cb32-19"><a href="#cb32-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(<span class="st">&quot;fomo&quot;</span>, <span class="dv">33</span><span class="sc">:</span><span class="dv">35</span>)</span>
-<span id="cb32-20"><a href="#cb32-20" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb32-21"><a href="#cb32-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-22"><a href="#cb32-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Summenwert berechnen</span></span>
-<span id="cb32-23"><a href="#cb32-23" aria-hidden="true" tabindex="-1"></a>data_ohneNA<span class="sc">$</span>fomo <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(data_ohneNA[, fomo_items])</span>
-<span id="cb32-24"><a href="#cb32-24" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(data_ohneNA<span class="sc">$</span>fomo)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1]  95 102  78  77  79  65</code></pre>
+<pre><code>[1] 2.714286 2.914286 2.228571 2.200000 2.257143 1.857143</code></pre>
 </div>
 </div>
 </section>
@@ -2505,13 +2489,13 @@ niedrig  mittel    hoch
 <h1 data-number="5"><span class="header-section-number">5</span> Exportieren des Datensatzes</h1>
 <p>Abschließend exportieren wir unseren aufbereiteten Datensatz, damit wir im nächsten Skript weiter damit arbeiten können und tatsächliche deskriptive und inferenzstatistische Analysen durchführen können. Wählt hier einen Ort auf euerem PC und Dateinamen aus, sodass ihr die Datei wiederfindet.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(data_ohneNA, <span class="st">&quot;data/proc/daten_fomo_processed.csv&quot;</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(data_ohneNA, <span class="st">&quot;data/proc/daten_fomo_processed.csv&quot;</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="verwendete-pakete" class="level1" data-number="6">
 <h1 data-number="6"><span class="header-section-number">6</span> Verwendete Pakete</h1>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>sessioninfo<span class="sc">::</span><span class="fu">session_info</span>(<span class="at">pkgs =</span> <span class="st">&quot;attached&quot;</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>sessioninfo<span class="sc">::</span><span class="fu">session_info</span>(<span class="at">pkgs =</span> <span class="st">&quot;attached&quot;</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>─ Session info ───────────────────────────────────────────────────────────────
  setting  value
