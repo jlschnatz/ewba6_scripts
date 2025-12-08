@@ -1,18 +1,61 @@
 ---
-title: "Willkommen"
+title: "EW-BA6"
+subtitle: "Datenaufbereitung & Analyse"
 ---
 
-# Einführung in das Seminar
+Willkommen. Diese Webseite bündelt die R-Skripte für die statistische Auswertung Ihres Forschungsprojekts für das Seminar EW-BA6.
 
-Willkommen auf der Begleitseite zum Seminar **EW-BA6**.
+## Übersicht
 
-Diese Webseite begleitet Sie durch die statistische Auswertung Ihrer Hausarbeit.
+Der Ablauf der Auswertung gliedert sich in zwei aufeinanderfolgende Schritte:
 
-## Aufbau
+1.  **[Datenaufbereitung](preprocess.qmd)**: Import von SoSciSurvey, Bereinigung fehlender Werte und Skalenbildung.
 
-1.  **[Datenaufbereitung](preprocess.qmd)**: Wie man Daten von SoSciSurvey importiert, bereinigt und Skalen bildet.
-2.  **[Analyse](analysis.qmd)**: Deskriptive Statistik, t-Tests, ANOVA und Korrelationen.
+1.  **[Statistische Analyse](analysis.qmd)**: Deskriptive Statistik und Hypothesentests (*t*-Test, ANOVA, Korrelation).
 
-## Voraussetzungen
+---
 
-Bitte stellen Sie sicher, dass Sie R und RStudio installiert haben und die notwendigen Pakete (`tidyverse`, `psych`, etc.) bereitstehen.
+## Setup
+
+Damit Sie die Skripte nutzen können, muss Ihre Arbeitsumgebung korrekt eingerichtet sein. Bitte arbeiten Sie diese vier Punkte nacheinander ab:
+
+1.  **R Installation** 
+2.  **RStudio Desktop Installation** 
+3.  **R-Pakete installieren**
+4.  **Rohdaten ablegen**
+
+::: {.callout-note appearance="minimal" collapse="true"}
+## Klick hier: Schritt-für-Schritt Installationsanleitung
+
+**Wichtig:** Installieren Sie zwingend zuerst R, danach RStudio.
+
+**Zu Schritt 1: R installieren**
+
+* **Windows:** [Download hier](https://cran.r-project.org/bin/windows/base/)
+
+* **macOS:** [Download hier](https://cran.r-project.org/bin/macosx/)
+    * *Achtung:* Wählen Sie die richtige Version für Ihren Chip!
+    * "Apple Silicon" (M1/M2/M3) $\rightarrow$ `arm64` Datei.
+    * Alter Intel-Mac $\rightarrow$ `x86_64` Datei.
+
+**Zu Schritt 2: RStudio installieren**
+
+* Laden Sie die kostenlose "RStudio Desktop" Version [hier herunter](https://posit.co/download/rstudio-desktop/).
+
+**Zu Schritt 3: Pakete installieren**
+
+Kopieren Sie diesen Code, fügen Sie ihn in die **Konsole** von RStudio ein und drücken Sie Enter:
+
+```r
+if (!require("pacman")) install.packages("pacman")
+pacman::p_load(tidyverse, rstatix, psych, sjPlot, naniar, readr, ggplot2)
+```
+
+**Zu Schritt 4: Rohdaten**
+
+Laden Sie den Datensatz hier herunter: [Datensatz (CSV)](https://raw.githubusercontent.com/jlschnatz/ewba6_scripts/master/data/raw/data_ewba6_raw_v2.csv) downloaden.
+
+* Erstellen Sie in Ihrem Projektordner die Unterordner `data` und darin `raw` (`data/raw`).
+* Verschieben Sie die Datei mit den Rohdaten genau dort hinein.
+
+:::

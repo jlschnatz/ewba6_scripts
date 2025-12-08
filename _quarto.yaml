@@ -6,7 +6,7 @@ execute:
   freeze: auto
 
 website:
-  title: "EW-BA6: Datenanalyse"
+  title: "EW-BA6 Datenanalyse"
   navbar:
     left:
       - href: index.qmd
