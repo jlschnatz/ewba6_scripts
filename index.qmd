@@ -53,7 +53,7 @@ pacman::p_load(readr, dplyr, rstatix, sjPlot, systemfonts, tidyplots, naniar, ps
 
 **Zu Schritt 4: Rohdaten**
 
-Laden Sie den Datensatz hier herunter: [Datensatz (CSV)](https://raw.githubusercontent.com/jlschnatz/ewba6_scripts/master/data/raw/data_ewba6_raw_v2.csv) downloaden.
+Laden Sie den Datensatz hier herunter: [Datensatz (CSV)](https://raw.githubusercontent.com/jlschnatz/ewba6_scripts/master/data/raw/data_ewba6_raw_v2.csv?raw=1) downloaden.
 
 * Erstellen Sie in Ihrem Projektordner die Unterordner `data` und darin `raw` (`data/raw`).
 * Verschieben Sie die Datei mit den Rohdaten genau dort hinein.

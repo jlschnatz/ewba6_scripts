@@ -123,7 +123,7 @@ data_brauchbar <- data_brauchbar %>%
 
 ### Möglichkeit 2
 
-Wir können die Spalten auch gleichzeitig umbennen mit dem `colnames()`-Befehl. Dabei machen wir uns zu Nutze, dass die Spaltennamen für FOMO `fomo1`, `fomo2`, `fomo3`, ... bennant werden sollen und wir dadurch durch den `paste0("fomo", seq(1, 35))` die 35 Variablennamen mit einem Befehl erstellen können. Die Reihenfolge der neuen Spaltennamen muss der Reihenfolge der alten Spaltennamen entsprechen.
+Wir können die Spalten auch gleichzeitig umbennen mit dem `colnames()`-Befehl. Dabei machen wir uns zu Nutze, dass die Spaltennamen für FOMO `fomo1`, `fomo2`, `fomo3`, ... bennant werden sollen und wir dadurch mit `paste0("fomo", seq(1, 35))` die 35 Variablennamen in einem Befehl erstellen können. Die Reihenfolge der neuen Spaltennamen muss der Reihenfolge der alten Spaltennamen entsprechen.
 
 ```{r}
 ## Neue Spaltennamen:
