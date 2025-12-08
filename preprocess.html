@@ -298,50 +298,69 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>Im nächsten Schritt wollen wir die Variablen so umbenennen, dass wir sie im nächsten Schritt einfacher nutzen können. Die notwendige Informationen sind im Codebook enthalten, welches ihr ebenfalls bei SosciSurvey herunterladen könnt. Es macht Sinn, die Namen auch inhaltlich zu benennen, in unserem Beispiel geht es um FOMO (Fear of missing out)</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true">Möglichkeit 1</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false">Möglichkeit 2</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<p>Wir können einerseits mit dem <code>rename(newname = oldname)</code>-Befehl des <em>dplyr</em>-Pakets einzeln Spalten umbennen.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Neue Spaltennamen:</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(data_brauchbar) <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"id"</span>, <span class="st">"zustimmung"</span>, <span class="st">"geschlecht"</span>, <span class="st">"alter"</span>, </span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(<span class="st">"fomo"</span>, <span class="fu">seq</span>(<span class="dv">1</span>, <span class="dv">35</span>)), <span class="st">"verfuegbarkeitserwartung"</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>data_brauchbar <span class="ot">&lt;-</span> data_brauchbar <span class="sc">%&gt;%</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">id =</span> CASE, <span class="at">zustimmung =</span> EI05, <span class="at">geschlecht =</span> EI01, <span class="at">alter =</span> EI02_01,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">fomo1 =</span> K101_01, <span class="at">fomo2 =</span> K101_02,  <span class="at">fomo3 =</span> K101_03, <span class="co"># ...</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># jede Variable, die geändert werden soll, hier einfügen</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  ) </span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<p>Wir können die Spalten auch gleichzeitig umbennen mit dem <code>colnames()</code>-Befehl. Dabei machen wir uns zu Nutze, dass die Spaltennamen für FOMO <code>fomo1</code>, <code>fomo2</code>, <code>fomo3</code>, … bennant werden sollen und wir dadurch durch den <code>paste0("fomo", seq(1, 35))</code> die 35 Variablennamen mit einem Befehl erstellen können. Die Reihenfolge der neuen Spaltennamen muss der Reihenfolge der alten Spaltennamen entsprechen.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Neue Spaltennamen:</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(data_brauchbar) <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"id"</span>, <span class="st">"zustimmung"</span>, <span class="st">"geschlecht"</span>, <span class="st">"alter"</span>, </span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(<span class="st">"fomo"</span>, <span class="fu">seq</span>(<span class="dv">1</span>, <span class="dv">35</span>)), <span class="st">"verfuegbarkeitserwartung"</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
 </div>
 <p>Nun interessiert es uns, ob es fehlende Werte gibt. Dies kann man mit dem <code>anyNA()</code>-Befehl erfragen. Allerdings gibt es hier eine Schwierigkeiten, da SosciSurvey fehlende Werte nicht als NA sondern als -1 bzw. -9 speichert. Aus diesem Grund müssen wir festlegen, dass -1 und -9 als NAs angesehen werden.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Abfrage, ob NAs vorhanden sind:</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">anyNA</span>(data_brauchbar) <span class="co"># FALSE </span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Abfrage, ob NAs vorhanden sind:</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">anyNA</span>(data_brauchbar) <span class="co"># FALSE </span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] FALSE</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Abfrage, ob -1 oder -9 vorhanden ist:</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">any</span>(data_brauchbar <span class="sc">==</span> <span class="sc">-</span><span class="dv">9</span>) <span class="co"># TRUE</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Abfrage, ob -1 oder -9 vorhanden ist:</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">any</span>(data_brauchbar <span class="sc">==</span> <span class="sc">-</span><span class="dv">9</span>) <span class="co"># TRUE</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] TRUE</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">any</span>(data_brauchbar <span class="sc">==</span> <span class="sc">-</span><span class="dv">1</span>) <span class="co"># TRUE</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">any</span>(data_brauchbar <span class="sc">==</span> <span class="sc">-</span><span class="dv">1</span>) <span class="co"># TRUE</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] TRUE</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Da diese fehlenden Werte vorhanden sind, müssen diese als NAs gelabelt werden:</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>data_brauchbar[data_brauchbar <span class="sc">==</span> <span class="sc">-</span><span class="dv">9</span>] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>data_brauchbar[data_brauchbar <span class="sc">==</span> <span class="sc">-</span><span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="do">## Abfrage, ob es nun NAs gibt:</span></span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="fu">anyNA</span>(data_brauchbar) <span class="co"># TRUE -&gt; das Umlabeln hat also funktioniert </span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Da diese fehlenden Werte vorhanden sind, müssen diese als NAs gelabelt werden:</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>data_brauchbar[data_brauchbar <span class="sc">==</span> <span class="sc">-</span><span class="dv">9</span>] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>data_brauchbar[data_brauchbar <span class="sc">==</span> <span class="sc">-</span><span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="do">## Abfrage, ob es nun NAs gibt:</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="fu">anyNA</span>(data_brauchbar) <span class="co"># TRUE -&gt; das Umlabeln hat also funktioniert </span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] TRUE</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Wie viele Daten fehlen:</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">is.na</span>(data_brauchbar)) <span class="co"># 95 fehlende Angaben</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Wie viele Daten fehlen:</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">is.na</span>(data_brauchbar)) <span class="co"># 95 fehlende Angaben</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 95</code></pre>
 </div>
 </div>
 <p>In diesem Fall sind 95 fehlende Werte vorhanden. Um die fehlenden Werte genauer zu explorieren, sollte am Rande das naniar-Package erwähnt werden, da es einige nützliche Funktionen diesbezüglich enthält. Wir können zum Beispiel über die Cases (Proband:innen) hinweg die prozentuale Häufigkeit an Missings berechnen.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>na_count_per_person <span class="ot">&lt;-</span> <span class="fu">miss_case_summary</span>(data_brauchbar) <span class="sc">%&gt;%</span> </span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(pct_miss <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="co"># nur Personen die NAs haben </span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(na_count_per_person)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>na_count_per_person <span class="ot">&lt;-</span> <span class="fu">miss_case_summary</span>(data_brauchbar) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(pct_miss <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="co"># nur Personen die NAs haben </span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(na_count_per_person)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -470,7 +489,7 @@ Disclaimer zu fehlenden Werten
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>data_ohneNA <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(data_brauchbar) <span class="co"># NAs auschließen</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>data_ohneNA <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(data_brauchbar) <span class="co"># NAs auschließen</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="datenaufbereitung" class="level1">
@@ -478,41 +497,41 @@ Disclaimer zu fehlenden Werten
 <p>In diesem Abschnitt wird der Datensatz Schritt für Schritt für unsere Analysen vorbereitet. Zuerst wird die Variable Geschlecht (<code>geschlecht</code>), die standardmäßig von SosciSurvey aus Zahlen 1 bis 3 beinhaltet, in eine verständlichere Form umgewandelt: Die Zahlen stehen jetzt für “m” (männlich), “w” (weiblich) und “d” (divers). Die Reihenfolge in der die Geschlechter durchnummeriert sind, hängt von eurer Erhebung ab. Ihr könnt diese im Codebook nachschauen.</p>
 <p>Die Variable “Erwartung der Verfuegbarkeit” (<code>verfuegbarkeitserwartung</code>) beinhaltet inwieweit die eigene Freundesgruppe erwartet, dass man schnell antwortet und für Ihre Anliegen und Probleme verfügbar ist. Diese Variable muss ebenfalls als analog zum Geschlecht als Faktor umkodiert werden.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Geschlecht:</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(data_ohneNA<span class="sc">$</span>geschlecht)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Geschlecht:</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(data_ohneNA<span class="sc">$</span>geschlecht)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
   1   2   3 
  32 103   1 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Umwandlung in Faktor</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>data_ohneNA<span class="sc">$</span>geschlecht <span class="ot">&lt;-</span> <span class="fu">factor</span>(</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> data_ohneNA<span class="sc">$</span>geschlecht, <span class="co"># Variable auswählen </span></span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">levels =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="co"># 3 Geschlechter erhoben</span></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"m"</span>, <span class="st">"w"</span>, <span class="st">"d"</span>) <span class="co"># Reihenfolge wie auch erhoben wurde</span></span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  ) </span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(data_ohneNA<span class="sc">$</span>geschlecht)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Umwandlung in Faktor</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>data_ohneNA<span class="sc">$</span>geschlecht <span class="ot">&lt;-</span> <span class="fu">factor</span>(</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> data_ohneNA<span class="sc">$</span>geschlecht, <span class="co"># Variable auswählen </span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">levels =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="co"># 3 Geschlechter erhoben</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"m"</span>, <span class="st">"w"</span>, <span class="st">"d"</span>) <span class="co"># Reihenfolge wie auch erhoben wurde</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  ) </span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(data_ohneNA<span class="sc">$</span>geschlecht)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
   m   w   d 
  32 103   1 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Verfuegbarkeitserwartung:</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(data_ohneNA<span class="sc">$</span>verfuegbarkeitserwartung)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Verfuegbarkeitserwartung:</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(data_ohneNA<span class="sc">$</span>verfuegbarkeitserwartung)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
    hoch  mittel niedrig 
      39      60      37 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Umwandlung in Faktor</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>data_ohneNA<span class="sc">$</span>verfuegbarkeitserwartung <span class="ot">&lt;-</span> <span class="fu">factor</span>(</span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> data_ohneNA<span class="sc">$</span>verfuegbarkeitserwartung,</span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"niedrig"</span>, <span class="st">"mittel"</span>, <span class="st">"hoch"</span>),</span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"niedrig"</span>, <span class="st">"mittel"</span>, <span class="st">"hoch"</span>)</span>
-<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(data_ohneNA<span class="sc">$</span>verfuegbarkeitserwartung)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Umwandlung in Faktor</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>data_ohneNA<span class="sc">$</span>verfuegbarkeitserwartung <span class="ot">&lt;-</span> <span class="fu">factor</span>(</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> data_ohneNA<span class="sc">$</span>verfuegbarkeitserwartung,</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"niedrig"</span>, <span class="st">"mittel"</span>, <span class="st">"hoch"</span>),</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"niedrig"</span>, <span class="st">"mittel"</span>, <span class="st">"hoch"</span>)</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(data_ohneNA<span class="sc">$</span>verfuegbarkeitserwartung)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 niedrig  mittel    hoch 
@@ -521,33 +540,33 @@ niedrig  mittel    hoch
 </div>
 <p>Bevor wir einen summierten FOMO-Wert berechnen können, müssen wir im Codebook schauen, ob es invertierte Items gibt, d.h. Fragen bei denen hohe Werte (entgegen des inhaltlichen Zusammenhangs) für weniger FOMO spricht. Dies ist für die Items 10, 24, 29, 30, 32 der Fall. Wir können diese Items mit dem <code>rec(..., rec = "rev")</code> Befehl des <em>sjmisc</em>-Paket sehr einfach invertieren.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Invertierte Items umkodieren (1 &lt;-&gt; 4, 2 &lt;-&gt; 3 entspricht: 5 - Wert)</span></span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>data_ohneNA<span class="sc">$</span>fomo10_inv <span class="ot">&lt;-</span> <span class="fu">rec</span>(data_ohneNA<span class="sc">$</span>fomo10, <span class="at">rec =</span> <span class="st">"rev"</span>)</span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>data_ohneNA<span class="sc">$</span>fomo24_inv <span class="ot">&lt;-</span> <span class="fu">rec</span>(data_ohneNA<span class="sc">$</span>fomo24, <span class="at">rec =</span> <span class="st">"rev"</span>)</span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>data_ohneNA<span class="sc">$</span>fomo29_inv <span class="ot">&lt;-</span> <span class="fu">rec</span>(data_ohneNA<span class="sc">$</span>fomo29, <span class="at">rec =</span> <span class="st">"rev"</span>)</span>
-<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>data_ohneNA<span class="sc">$</span>fomo30_inv <span class="ot">&lt;-</span> <span class="fu">rec</span>(data_ohneNA<span class="sc">$</span>fomo30, <span class="at">rec =</span> <span class="st">"rev"</span>)</span>
-<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>data_ohneNA<span class="sc">$</span>fomo32_inv <span class="ot">&lt;-</span> <span class="fu">rec</span>(data_ohneNA<span class="sc">$</span>fomo32, <span class="at">rec =</span> <span class="st">"rev"</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Invertierte Items umkodieren (1 &lt;-&gt; 4, 2 &lt;-&gt; 3 entspricht: 5 - Wert)</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>data_ohneNA<span class="sc">$</span>fomo10_inv <span class="ot">&lt;-</span> <span class="fu">rec</span>(data_ohneNA<span class="sc">$</span>fomo10, <span class="at">rec =</span> <span class="st">"rev"</span>)</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>data_ohneNA<span class="sc">$</span>fomo24_inv <span class="ot">&lt;-</span> <span class="fu">rec</span>(data_ohneNA<span class="sc">$</span>fomo24, <span class="at">rec =</span> <span class="st">"rev"</span>)</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>data_ohneNA<span class="sc">$</span>fomo29_inv <span class="ot">&lt;-</span> <span class="fu">rec</span>(data_ohneNA<span class="sc">$</span>fomo29, <span class="at">rec =</span> <span class="st">"rev"</span>)</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>data_ohneNA<span class="sc">$</span>fomo30_inv <span class="ot">&lt;-</span> <span class="fu">rec</span>(data_ohneNA<span class="sc">$</span>fomo30, <span class="at">rec =</span> <span class="st">"rev"</span>)</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>data_ohneNA<span class="sc">$</span>fomo32_inv <span class="ot">&lt;-</span> <span class="fu">rec</span>(data_ohneNA<span class="sc">$</span>fomo32, <span class="at">rec =</span> <span class="st">"rev"</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Danach können wir einen Gesamtmittelwert “FOMO” für jede Person berechnen, wofür wir den <code>rowMeans()</code>-Befehl nutzen.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Liste der Items (inkl. invertierter Items)</span></span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>fomo_items <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(<span class="st">"fomo"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>),</span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"fomo10_inv"</span>,</span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(<span class="st">"fomo"</span>, <span class="dv">11</span><span class="sc">:</span><span class="dv">23</span>),</span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"fomo24_inv"</span>,</span>
-<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(<span class="st">"fomo"</span>, <span class="dv">25</span><span class="sc">:</span><span class="dv">28</span>),</span>
-<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">"fomo29_inv"</span>,</span>
-<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">"fomo30_inv"</span>,</span>
-<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>  <span class="st">"fomo31"</span>,</span>
-<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>  <span class="st">"fomo32_inv"</span>,</span>
-<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(<span class="st">"fomo"</span>, <span class="dv">33</span><span class="sc">:</span><span class="dv">35</span>)</span>
-<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Mittelwert berechnen</span></span>
-<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a>data_ohneNA<span class="sc">$</span>fomo <span class="ot">&lt;-</span> <span class="fu">rowMeans</span>(data_ohneNA[, fomo_items])</span>
-<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(data_ohneNA<span class="sc">$</span>fomo)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Liste der Items (inkl. invertierter Items)</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>fomo_items <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(<span class="st">"fomo"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>),</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"fomo10_inv"</span>,</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(<span class="st">"fomo"</span>, <span class="dv">11</span><span class="sc">:</span><span class="dv">23</span>),</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"fomo24_inv"</span>,</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(<span class="st">"fomo"</span>, <span class="dv">25</span><span class="sc">:</span><span class="dv">28</span>),</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">"fomo29_inv"</span>,</span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">"fomo30_inv"</span>,</span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>  <span class="st">"fomo31"</span>,</span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>  <span class="st">"fomo32_inv"</span>,</span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(<span class="st">"fomo"</span>, <span class="dv">33</span><span class="sc">:</span><span class="dv">35</span>)</span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Mittelwert berechnen</span></span>
+<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a>data_ohneNA<span class="sc">$</span>fomo <span class="ot">&lt;-</span> <span class="fu">rowMeans</span>(data_ohneNA[, fomo_items])</span>
+<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(data_ohneNA<span class="sc">$</span>fomo)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 2.714286 2.914286 2.228571 2.200000 2.257143 1.857143</code></pre>
 </div>
@@ -557,13 +576,13 @@ niedrig  mittel    hoch
 <h1>Exportieren des Datensatzes</h1>
 <p>Abschließend exportieren wir unseren aufbereiteten Datensatz, damit wir im nächsten Skript weiter damit arbeiten können und tatsächliche deskriptive und inferenzstatistische Analysen durchführen können. Wählt hier einen Ort auf euerem PC und Dateinamen aus, sodass ihr die Datei wiederfindet.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(data_ohneNA, <span class="st">"data/proc/daten_fomo_processed.csv"</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(data_ohneNA, <span class="st">"data/proc/daten_fomo_processed.csv"</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="verwendete-pakete" class="level1">
 <h1>Verwendete Pakete</h1>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>sessioninfo<span class="sc">::</span><span class="fu">session_info</span>(<span class="at">pkgs =</span> <span class="st">"attached"</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>sessioninfo<span class="sc">::</span><span class="fu">session_info</span>(<span class="at">pkgs =</span> <span class="st">"attached"</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>─ Session info ───────────────────────────────────────────────────────────────
  setting  value
@@ -572,8 +591,8 @@ niedrig  mittel    hoch
  system   aarch64, darwin20
  ui       X11
  language (EN)
- collate  de_DE.UTF-8
- ctype    de_DE.UTF-8
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
  tz       Europe/Berlin
  date     2025-12-08
  pandoc   3.1.12.3 @ /opt/homebrew/bin/ (via rmarkdown)
