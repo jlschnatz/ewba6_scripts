@@ -21,7 +21,7 @@ format:
       language: de    
       lang: de          
       number-sections: true      
-      self-contained: true       
+      #self-contained: true       
       code-fold: false            
       code-tools: false 
       code-overflow: wrap          

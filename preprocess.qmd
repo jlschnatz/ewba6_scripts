@@ -19,7 +19,7 @@ format:
       css: styles.css             
       lang: de          
       number-sections: true      
-      self-contained: true   
+      #self-contained: true   
       code-overflow: wrap    
       code-fold: false            
       code-tools: false           
