@@ -313,7 +313,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
-<p>Wir können die Spalten auch gleichzeitig umbennen mit dem <code>colnames()</code>-Befehl. Dabei machen wir uns zu Nutze, dass die Spaltennamen für FOMO <code>fomo1</code>, <code>fomo2</code>, <code>fomo3</code>, … bennant werden sollen und wir dadurch durch den <code>paste0("fomo", seq(1, 35))</code> die 35 Variablennamen mit einem Befehl erstellen können. Die Reihenfolge der neuen Spaltennamen muss der Reihenfolge der alten Spaltennamen entsprechen.</p>
+<p>Wir können die Spalten auch gleichzeitig umbennen mit dem <code>colnames()</code>-Befehl. Dabei machen wir uns zu Nutze, dass die Spaltennamen für FOMO <code>fomo1</code>, <code>fomo2</code>, <code>fomo3</code>, … bennant werden sollen und wir dadurch mit <code>paste0("fomo", seq(1, 35))</code> die 35 Variablennamen in einem Befehl erstellen können. Die Reihenfolge der neuen Spaltennamen muss der Reihenfolge der alten Spaltennamen entsprechen.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Neue Spaltennamen:</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(data_brauchbar) <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
