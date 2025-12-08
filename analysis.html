@@ -186,23 +186,23 @@ window.Quarto = {
     <h2 id="toc-title">Auf dieser Seite</h2>
    
   <ul>
-  <li><a href="#einleitung" id="toc-einleitung" class="nav-link active" data-scroll-target="#einleitung"><span class="header-section-number">1</span> Einleitung</a></li>
-  <li><a href="#daten-in-r-laden" id="toc-daten-in-r-laden" class="nav-link" data-scroll-target="#daten-in-r-laden"><span class="header-section-number">2</span> Daten in R laden</a></li>
-  <li><a href="#deskriptive-statistik" id="toc-deskriptive-statistik" class="nav-link" data-scroll-target="#deskriptive-statistik"><span class="header-section-number">3</span> Deskriptive Statistik</a>
+  <li><a href="#einleitung" id="toc-einleitung" class="nav-link active" data-scroll-target="#einleitung">Einleitung</a></li>
+  <li><a href="#daten-in-r-laden" id="toc-daten-in-r-laden" class="nav-link" data-scroll-target="#daten-in-r-laden">Daten in R laden</a></li>
+  <li><a href="#deskriptive-statistik" id="toc-deskriptive-statistik" class="nav-link" data-scroll-target="#deskriptive-statistik">Deskriptive Statistik</a>
   <ul class="collapse">
-  <li><a href="#kategorische-variablen" id="toc-kategorische-variablen" class="nav-link" data-scroll-target="#kategorische-variablen"><span class="header-section-number">3.1</span> Kategorische Variablen</a></li>
-  <li><a href="#numerische-variablen" id="toc-numerische-variablen" class="nav-link" data-scroll-target="#numerische-variablen"><span class="header-section-number">3.2</span> Numerische Variablen</a></li>
+  <li><a href="#kategorische-variablen" id="toc-kategorische-variablen" class="nav-link" data-scroll-target="#kategorische-variablen">Kategorische Variablen</a></li>
+  <li><a href="#numerische-variablen" id="toc-numerische-variablen" class="nav-link" data-scroll-target="#numerische-variablen">Numerische Variablen</a></li>
   </ul></li>
-  <li><a href="#inferenzstatistik" id="toc-inferenzstatistik" class="nav-link" data-scroll-target="#inferenzstatistik"><span class="header-section-number">4</span> Inferenzstatistik</a>
+  <li><a href="#inferenzstatistik" id="toc-inferenzstatistik" class="nav-link" data-scroll-target="#inferenzstatistik">Inferenzstatistik</a>
   <ul class="collapse">
-  <li><a href="#korrelationen" id="toc-korrelationen" class="nav-link" data-scroll-target="#korrelationen"><span class="header-section-number">4.1</span> Korrelationen</a></li>
-  <li><a href="#mittelwertsvergleiche" id="toc-mittelwertsvergleiche" class="nav-link" data-scroll-target="#mittelwertsvergleiche"><span class="header-section-number">4.2</span> Mittelwertsvergleiche</a>
+  <li><a href="#korrelationen" id="toc-korrelationen" class="nav-link" data-scroll-target="#korrelationen">Korrelationen</a></li>
+  <li><a href="#mittelwertsvergleiche" id="toc-mittelwertsvergleiche" class="nav-link" data-scroll-target="#mittelwertsvergleiche">Mittelwertsvergleiche</a>
   <ul class="collapse">
-  <li><a href="#t-test" id="toc-t-test" class="nav-link" data-scroll-target="#t-test"><span class="header-section-number">4.2.1</span> <em>t</em>-Test</a></li>
-  <li><a href="#anova" id="toc-anova" class="nav-link" data-scroll-target="#anova"><span class="header-section-number">4.2.2</span> ANOVA</a></li>
+  <li><a href="#t-test" id="toc-t-test" class="nav-link" data-scroll-target="#t-test"><em>t</em>-Test</a></li>
+  <li><a href="#anova" id="toc-anova" class="nav-link" data-scroll-target="#anova">ANOVA</a></li>
   </ul></li>
   </ul></li>
-  <li><a href="#verwendete-r-pakete" id="toc-verwendete-r-pakete" class="nav-link" data-scroll-target="#verwendete-r-pakete"><span class="header-section-number">5</span> Verwendete R-Pakete</a></li>
+  <li><a href="#verwendete-r-pakete" id="toc-verwendete-r-pakete" class="nav-link" data-scroll-target="#verwendete-r-pakete">Verwendete R-Pakete</a></li>
   </ul>
 </nav>
     </div>
@@ -256,12 +256,12 @@ window.Quarto = {
 </header>
 
 
-<section id="einleitung" class="level1" data-number="1">
-<h1 data-number="1"><span class="header-section-number">1</span> Einleitung</h1>
+<section id="einleitung" class="level1">
+<h1>Einleitung</h1>
 <p>Nachdem wir im ersten Skript gelernt haben, wie man einen Beispieldatensatz für die Analyse vorbereitet, beschäftigen wir uns nun mit den Möglichkeiten der statistischen Auswertung. Wir setzen direkt am bisherigen Beispiel an und führen euch Schritt für Schritt durch die wichtigsten Methoden der deskriptiven und inferenzstatistischen Analyse.</p>
 </section>
-<section id="daten-in-r-laden" class="level1" data-number="2">
-<h1 data-number="2"><span class="header-section-number">2</span> Daten in R laden</h1>
+<section id="daten-in-r-laden" class="level1">
+<h1>Daten in R laden</h1>
 <p>Bevor wir mit der Analyse beginnen, müssen wir alle benötigten Pakete laden. Das pacman-Paket ermöglicht es, mehrere Pakete gleichzeitig zu laden. Falls ihr es noch nicht installiert habt, könnt ihr das mit <code>install.packages("pacman")</code> nachholen.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("pacman")</span></span>
@@ -295,10 +295,10 @@ window.Quarto = {
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>data_proc<span class="sc">$</span>verfuegbarkeitserwartung <span class="ot">&lt;-</span> <span class="fu">factor</span>(data_proc<span class="sc">$</span>verfuegbarkeitserwartung, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"niedrig"</span>, <span class="st">"mittel"</span>, <span class="st">"hoch"</span>))</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="deskriptive-statistik" class="level1" data-number="3">
-<h1 data-number="3"><span class="header-section-number">3</span> Deskriptive Statistik</h1>
-<section id="kategorische-variablen" class="level2" data-number="3.1">
-<h2 data-number="3.1" class="anchored" data-anchor-id="kategorische-variablen"><span class="header-section-number">3.1</span> Kategorische Variablen</h2>
+<section id="deskriptive-statistik" class="level1">
+<h1>Deskriptive Statistik</h1>
+<section id="kategorische-variablen" class="level2">
+<h2 class="anchored" data-anchor-id="kategorische-variablen">Kategorische Variablen</h2>
 <p>Für die Beschreibung von kategorialen Variablen sind absolute und relative Häufigkeiten zentral. Sie zeigen, wie viele Personen in jeder Gruppe sind und wie groß ihr Anteil an der Gesamtstichprobe ist. In R können wir dafür den <code>freq_table()</code> aus dem Paket <em>rstatix</em> nutzen.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tab_df</span>(<span class="fu">freq_table</span>(data_proc, geschlecht), <span class="at">col.header =</span> <span class="fu">c</span>(<span class="st">"Geschlecht"</span>, <span class="st">"N"</span>, <span class="st">"Relative Häufigkeit"</span>))</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -388,8 +388,8 @@ window.Quarto = {
 </div>
 </div>
 </section>
-<section id="numerische-variablen" class="level2" data-number="3.2">
-<h2 data-number="3.2" class="anchored" data-anchor-id="numerische-variablen"><span class="header-section-number">3.2</span> Numerische Variablen</h2>
+<section id="numerische-variablen" class="level2">
+<h2 class="anchored" data-anchor-id="numerische-variablen">Numerische Variablen</h2>
 <p>Numerische Variablen wie „Alter“ oder „FOMO“ werden mit statistischen Kennwerten wie Mittelwert (Durchschnitt), Standardabweichung (Streuung), Median (Zentralwert) und weiteren beschrieben (s.h. Folien). Diese Kennwerte geben einen schnellen Überblick über die Verteilung der Daten.</p>
 <p>In R nutzen wir dafür die <code>get_summary_stats()</code> Funktion.</p>
 <div class="cell">
@@ -478,11 +478,11 @@ window.Quarto = {
 </div>
 </section>
 </section>
-<section id="inferenzstatistik" class="level1" data-number="4">
-<h1 data-number="4"><span class="header-section-number">4</span> Inferenzstatistik</h1>
+<section id="inferenzstatistik" class="level1">
+<h1>Inferenzstatistik</h1>
 <p>Die Inferenzstatistik beschäftigt sich mit der Frage, ob die in einer Stichprobe beobachteten Zusammenhänge oder Unterschiede auch in der Grundgesamtheit (Population) bestehen. Dazu werden Hypothesen formuliert und mit Hilfe von Signifikanztests überprüft. Im Folgenden werden ein paar zentrale inferenzstatistische Verfahren beispielhaft vorgestellt, die auf unterschiedlichen Fragestellungen basieren.</p>
-<section id="korrelationen" class="level2" data-number="4.1">
-<h2 data-number="4.1" class="anchored" data-anchor-id="korrelationen"><span class="header-section-number">4.1</span> Korrelationen</h2>
+<section id="korrelationen" class="level2">
+<h2 class="anchored" data-anchor-id="korrelationen">Korrelationen</h2>
 <p>Wenn wir untersuchen möchten, ob zwei Variablen systematisch miteinander zusammenhängen, also ob sie gemeinsam <em>kovariieren</em>, nutzen wir die <strong>Korrelation</strong> als Maß für die Richtung und Stärke des Zusammenhangs. Im vorliegenden Beispiel interessiert uns, ob das Alter mit dem FOMO-Wert negativ zusammenhängt – also ob ältere Personen geringere FOMO-Werte aufweisen.</p>
 <p><strong>Hypothesenformulierung</strong>:</p>
 <p>Wir gehen in diesem Fall also von einem gerichteten Zusammenhang aus:</p>
@@ -582,11 +582,11 @@ window.Quarto = {
 </div>
 </div>
 </section>
-<section id="mittelwertsvergleiche" class="level2" data-number="4.2">
-<h2 data-number="4.2" class="anchored" data-anchor-id="mittelwertsvergleiche"><span class="header-section-number">4.2</span> Mittelwertsvergleiche</h2>
+<section id="mittelwertsvergleiche" class="level2">
+<h2 class="anchored" data-anchor-id="mittelwertsvergleiche">Mittelwertsvergleiche</h2>
 <p>Mittelwertsvergleiche dienen dazu, festzustellen, ob sich die durchschnittlichen Werte einer metrischen Variablen (z.B. FOMO) zwischen zwei oder mehr Gruppen signifikant unterscheiden. Die Wahl des statistischen Tests hängt davon ab, wie viele Gruppen miteinander verglichen werden sollen.</p>
-<section id="t-test" class="level3" data-number="4.2.1">
-<h3 data-number="4.2.1" class="anchored" data-anchor-id="t-test"><span class="header-section-number">4.2.1</span> <em>t</em>-Test</h3>
+<section id="t-test" class="level3">
+<h3 class="anchored" data-anchor-id="t-test"><em>t</em>-Test</h3>
 <p>Der <strong>t-Test für unabhängige Stichproben</strong> prüft, ob sich die Mittelwerte zweier unabhängiger Gruppen signifikant unterscheiden. In unserem Beispiel interessiert uns, ob Personen unterschiedlichen Geschlechts (männlich vs.&nbsp;weiblich) unterschiedliche FOMO-Werte aufweisen.</p>
 <p><strong>Hypothesenformulierung</strong></p>
 <ul>
@@ -761,8 +761,8 @@ window.Quarto = {
 </ul>
 <p>Eine Effektstärke von <em>d</em> = -0.21 bedeutet, dass sich die beiden Gruppen im Mittel um -0.21 Standardabweichungen unterscheiden. Es ist hier also maximal von einem kleinem Effekt auszugehen.</p>
 </section>
-<section id="anova" class="level3" data-number="4.2.2">
-<h3 data-number="4.2.2" class="anchored" data-anchor-id="anova"><span class="header-section-number">4.2.2</span> ANOVA</h3>
+<section id="anova" class="level3">
+<h3 class="anchored" data-anchor-id="anova">ANOVA</h3>
 <p>Wenn mehr als zwei Gruppen verglichen werden sollen, verwendet man die Varianzanalyse (<em>ANOVA</em>). Sie prüft, ob sich mindestens ein Gruppenmittelwert signifikant von den anderen unterscheidet.</p>
 <p><strong>Hypothesenformulierung</strong></p>
 <ul>
@@ -887,8 +887,8 @@ window.Quarto = {
 </section>
 </section>
 </section>
-<section id="verwendete-r-pakete" class="level1" data-number="5">
-<h1 data-number="5"><span class="header-section-number">5</span> Verwendete R-Pakete</h1>
+<section id="verwendete-r-pakete" class="level1">
+<h1>Verwendete R-Pakete</h1>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>sessioninfo<span class="sc">::</span><span class="fu">session_info</span>(<span class="at">pkgs =</span> <span class="st">"attached"</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
