@@ -1,0 +1,18 @@
+---
+title: "Willkommen"
+---
+
+# Einführung in das Seminar
+
+Willkommen auf der Begleitseite zum Seminar **EW-BA6**.
+
+Diese Webseite begleitet Sie durch die statistische Auswertung Ihrer Hausarbeit.
+
+## Aufbau
+
+1.  **[Datenaufbereitung](preprocess.qmd)**: Wie man Daten von SoSciSurvey importiert, bereinigt und Skalen bildet.
+2.  **[Analyse](analysis.qmd)**: Deskriptive Statistik, t-Tests, ANOVA und Korrelationen.
+
+## Voraussetzungen
+
+Bitte stellen Sie sicher, dass Sie R und RStudio installiert haben und die notwendigen Pakete (`tidyverse`, `psych`, etc.) bereitstehen.

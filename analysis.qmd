@@ -1,27 +1,31 @@
 ---
 title: "EW-BA6"
-subtitle: "Deskriptive und inferenzstatistische Analyse"
+subtitle: "Deskriptive und Inferenzstatistische Analyse"
 author:
   - name: "Luca Schnatz"
     affiliation: "Institut für Psychologie, Abteilung für Psychologische Methoden mit Interdisziplinärer Ausrichtung"
     email: schnatz@psych.uni-frankfurt.de
+    corresponding: true
   - name: "Erik Grützner"
     affiliation: "Institut für Psychologie, Abteilung für Differentielle Psychologie und Psychologische Diagnostik"
     email: gruetzner@psych.uni-frankfurt.de
-    corresponding: true
+    corresponding: false
 date: today
+
 format: 
    html:
       toc: true
-      theme: cosmo               
+      theme: cosmo  
+      css: styles.css             
       toc-depth: 3 
       language: de    
       lang: de          
       number-sections: true      
       self-contained: true       
       code-fold: false            
-      code-tools: false           
-      highlight-style: github    
+      code-tools: false 
+      code-overflow: wrap          
+      highlight-style: printing    
       html-math-method: mathjax  
       fig-align: center          
       fig-cap-location: bottom   
@@ -29,35 +33,17 @@ format:
       echo: true   
       warning: false              
       anchor-sections: true     
-      smooth-scroll: true        
+      smooth-scroll: true    
+      knitr:     
+         opts_chunk:
+            dev: "ragg_png"    
 ---
 
-```{css}
-#| echo: false
-code {
-  color:rgb(225, 40, 87); 
-  font-weight: normal; /* optional */
-}
 
-```
 
 ```{r ggplot-theme}
 #| echo: false
-pacman::p_load(sysfonts, showtext, ggplot2)
-font_add_google("Open Sans", "font")
-showtext_auto()
-showtext_opts(dpi = 300)
-
-theme_set(
-   sjPlot::theme_sjplot() +
-   theme(
-      text = element_text(family = "font"),
-      plot.title.position = "plot",
-      panel.background = element_rect(color = "lightgrey"),
-      plot.title = ggtext::element_textbox_simple(size = 13),
-      plot.subtitle = ggtext::element_textbox_simple(size = 11)
-      ) 
-   )
+pacman::p_load(sysfonts, ggplot2, tidyplots, systemfonts)
 
 ```
 
@@ -72,12 +58,12 @@ Bevor wir mit der Analyse beginnen, müssen wir alle benötigten Pakete laden. D
 ```{r load-packages}
 # install.packages("pacman")
 pacman::p_load(
-   readr,      # Daten einlesen
-   dplyr,      # Datenmanipulation
-   rstatix,    # Statistische Analysen
-   ggplot2,    # Grafiken
-   ggdist,     # Grafiken
-   sjPlot      # Tabellen
+   readr,         # Daten einlesen
+   dplyr,         # Datenmanipulation
+   rstatix,       # Statistische Analysen
+   tidyplots,     # Grafiken
+   systemfonts,   # Grafiken
+   sjPlot         # Tabellen
    )
 ```
 
@@ -88,6 +74,7 @@ Wir laden zunächst die vorbereiteten Daten. Achtet darauf, dass der Pfad zur Da
 
 data_proc <- read_csv("data/proc/daten_fomo_processed.csv")
 head(data_proc)
+
 ```
 
 Da CSV-Dateien keine Informationen über Faktoren speichern, müssen kategoriale Variablen wie „Geschlecht“ oder „Verfügbarkeitserwartung“ erneut als Faktor kodiert werden:
@@ -165,34 +152,24 @@ Wir gehen in diesem Fall also von einem gerichteten Zusammenhang aus:
 Bevor wir den Zusammenhang statistisch testen, empfiehlt sich eine grafische Exploration der Daten. Ein Streudiagramm zeigt, wie die einzelnen Werte von Alter und FOMO verteilt sind und ob ein Trend sichtbar ist. Zusätzlich wird eine Regressionslinie eingeblendet, die den geschätzten linearen Zusammenhang visualisiert.
 
 
-```{r, inf1}
-ggplot(data_proc, aes(alter, fomo)) +
-   # Streudiagramm der Rohdaten
-   geom_point(position = position_jitter(width = 0.1)) +
-   # Lineare Trendlinie mit Konfidenzintervall
-   geom_smooth(method = "lm", formula = y ~ x, color = "dodgerblue", fill = "grey80") +
-   # Achsenbeschriftung
-   scale_x_continuous(
-      name = "Alter",
-      limits = c(18, 40),
-      breaks = seq(20, 40, 5)
-   ) +
-   scale_y_continuous(
-      name = "FOMO",
-      limits = c(50, 130),
-      breaks = seq(50, 130, 10)
-   ) +
-   # Titel
-   labs(
-      title = "**Streudiagramm: Zusammenhang zwischen FOMO und Alter**",
-      subtitle = "*Blaue Linie: geschätzter linearer Zusammenhang; graues Band: Unsicherheitsbereich*"
-   ) # + theme() # für weitere Anpassung
+```{r}
+
+tidyplot(data_proc, x = alter, y = fomo) %>%
+   add_data_points_jitter(jitter_width = 0.6, white_border = TRUE) %>%
+   add_curve_fit(method = "lm", linewidth = 0.9, alpha = 0.2) %>%
+   adjust_font(family = "Optima", fontsize = 11) %>%
+   adjust_y_axis(limits = c(1, 5), breaks = seq(1, 5)) %>% 
+   adjust_x_axis_title("Alter") %>%
+   adjust_y_axis_title("FOMO") %>%
+   adjust_size(width = NA, height = NA)
+
 
 ```
 
+
 Die Grafik ermöglicht es, erste Hinweise auf die Richtung und Form des Zusammenhangs zu erhalten. Der abfallender Verlauf der Regressionslinie legt einen negativen Zusammenhang nahe.
 
-**Statistische Prüfung**:
+**Statistische Prüfung:**
 
 Für die Berechnung des Zusammenhangs verwenden wir den Pearson-Korrelationskoeffizienten, da beide Variablen metrisch sind und ein linearer Zusammenhang angenommen wird. Die gerichtete Hypothese wird durch das Argument `alternative = "less"` umgesetzt:
 
@@ -206,7 +183,7 @@ r_fomo_alter <- cor_test(
    alternative = "less"    # Gerichterer Zusammenhang H1: r < 0
    ) 
 
-print(r_fomo_alter)
+tab_df(r_fomo_alter)
 
 ```
 
@@ -221,7 +198,8 @@ Wenn die Voraussetzungen für Pearson (Normalverteilung, Linearität) nicht erf�
 
 ```{r}
 
-cor_test(data_proc, fomo, alter, method = "spearman", alternative = "less") 
+cor_test(data_proc, fomo, alter, method = "spearman", alternative = "less")  %>%
+   tab_df()
 
 ```
 
@@ -254,41 +232,36 @@ levels(data_ttest$geschlecht)
 
 Vor der formalen Testung empfiehlt sich eine grafische Darstellung der Verteilungen und Mittelwerte in beiden Gruppen, um ein Gefühl für die Daten zu bekommen. Hierzu eignet sich beispielsweise ein Dichteplot mit eingezeichneten Mittelwerten und den Rohdatenpunkten. Ein Dichteplot zeigt, wie die Werte einer Variablen innerhalb einer Gruppe verteilt sind, und macht sichtbar, ob die Verteilung beispielsweise symmetrisch, schief oder mehrgipflig ist.
 
+
 ```{r}
 
-ggplot(data_ttest, aes(geschlecht, fomo)) +
-   # Dichte
-   stat_slab(scale = 0.5, aes(fill = after_stat(level)), .width = c(.5, 1), show.legend = FALSE) +
-   # Mittelwerts der Geschlechter
-   stat_spike(at = "mean", scale = 0.5, linewidth = 0.8, size = 2) +
-   # rohe Datenpunkte
-   geom_jitter(width = 0.01, alpha = .5) +
-   scale_x_discrete(
-      name = "Geschlecht",
-      labels = c("Männlich", "Weiblich")
-   ) +
-   scale_y_continuous(
-      name = "FOMO",
-      limits = c(50, 130),
-      breaks = seq(50, 130, 10)
-   ) +
-   labs(
-      title = "**Dichteplot der FOMO-Skala nach Geschlecht**",
-      subtitle = "*Der innere graue Bereich zeigt den Interquartilsbereich (IQR), der die mittleren 50 % der Werte umfasst und damit die Streuung und Symmetrie der Verteilung innerhalb jeder Gruppe verdeutlicht.*"  
-      ) +
-   scale_fill_manual(values = c("grey90", "grey70"))
+tidyplot(data_ttest, x = geschlecht, y = fomo, color = geschlecht) %>%
+   add_ci95_errorbar(width = 0.0, linewidth = 1) %>%
+   add_mean_dot(width = 1) %>%
+   add_data_points_jitter(alpha = 0.1, jitter_width = 0.1) %>%
+   remove_legend() |>
+   adjust_font(family = "Optima", fontsize = 11) %>%
+   adjust_y_axis(limits = c(1, 5), breaks = seq(1, 5)) %>% 
+   adjust_x_axis_title("Geschlecht") %>%
+   adjust_y_axis_title("FOMO") %>%
+   adjust_size(width = NA, height = NA) %>%
+   #add_test_asterisks(method = "t_test", hide.ns = FALSE, hide_info = TRUE) |>
+   add_test_pvalue(label = "italic(p) = {format_p_value(p, 0.001)}", hide_info = TRUE)
+
+
 
 ```
+
 
 Diese Darstellung erlaubt es, die Verteilung, Streuung und Lage der Mittelwerte in beiden Gruppen direkt zu vergleichen.
 
 **Voraussetzungen des *t*-Tests**
 
-Vor der Durchführung des t-Tests sollten die Voraussetzungen geprüft werden:
+Vor der Durchführung des _t_-Tests sollten die Voraussetzungen geprüft werden:
 
-1. Normalverteilung der abhängigen Variable in beiden Gruppen (z.B. Shapiro-Wilk-Test).
-2. Varianzhomogenität (Gleichheit der Varianzen, z.B. Levene-Test).
-3. Unabhängigkeit der Beobachtungen (durch Studiendesign gegeben).
+1. **Normalverteilung** der abhängigen Variable in beiden Gruppen (z.B. Shapiro-Wilk-Test).
+2. **Varianzhomogenität** (Gleichheit der Varianzen, z.B. Levene-Test).
+3. **Unabhängigkeit** der Beobachtungen (durch Studiendesign gegeben).
 
 Wir können die Voraussetzungen der Normalverteilungen beispielsweise mit einem Shapiro-Test überprüfen. Wenn der *p*-Wert nicht statistisch signifikant ist, behalten wir die Nullhypothese, dass die Daten in der Population normalverteilt sind bei.
 
@@ -302,8 +275,7 @@ data_ttest %>%
 
 Beide p-Werte aus dem Shapiro-Wilk-Test sind in diesem Beispiel nicht statistisch signifikant, das bedeutet, dass wir die Nullhypothese der Normalverteilung beibehalten und davon ausgehen können, dass die Normalverteilungsannahme für die FOMO-Werte in beiden Geschlechtsgruppen nicht verletzt ist.
 
-
-Die Annahme der Varianzhomogenität (Homoskedastizität) überprüfen wir mit dem Levene-Test. Auch hier gilt: Die Nullhypothese des Tests besagt, dass die Varianzen in den Gruppen gleich sind. Ein nicht signifikanter p-Wert spricht dafür, dass kein Hinweis auf einen Unterschied der Varianzen vorliegt, sodass wir die Homoskedastizitätsannahme als erfüllt ansehen können.
+Die Annahme der Varianzhomogenität (Homoskedastizität) überprüfen wir mit dem Levene-Test. Auch hier gilt: Die Nullhypothese des Tests besagt, dass die Varianzen in den Gruppen gleich sind. Ein nicht signifikanter _p_-Wert spricht dafür, dass kein Hinweis auf einen Unterschied der Varianzen vorliegt, sodass wir die Homoskedastizitätsannahme als erfüllt ansehen können.
 
 
 ```{r}
@@ -311,7 +283,7 @@ levene_test(data_ttest, fomo ~ geschlecht)
 
 ```
 
-Da auch der Levene-Test in diesem Beispiel einen nicht signifikanten p-Wert liefert, gehen wir davon aus, dass die Voraussetzung der Varianzhomogenität nicht verletzt ist. Damit sind die zentralen Voraussetzungen für die Durchführung eines t-Tests für unabhängige Stichproben erfüllt
+Da auch der Levene-Test in diesem Beispiel einen nicht signifikanten *p*-Wert liefert, gehen wir davon aus, dass die Voraussetzung der Varianzhomogenität nicht verletzt ist. Damit sind die zentralen Voraussetzungen für die Durchführung eines _t_-Tests für unabhängige Stichproben erfüllt
 
 **Statistischer Test**
 
@@ -325,7 +297,7 @@ tt_geschl_fomo <- t_test(
    detailed = TRUE
    )
 
-print(tt_geschl_fomo)
+tab_df(tt_geschl_fomo)
 ```
 
 - *t*-Wert: Teststatistik, die das Verhältnis des Mittelwertsunterschieds zur Streuung beschreibt.
@@ -334,22 +306,22 @@ print(tt_geschl_fomo)
 
 Wir sehen, dass weibliche Personen im Mittel einen `r round(tt_geschl_fomo$estimate, 2)` Punkte größere FOMO Wert auweisen als männliche Personen. Der dazugehörige *t*-Wert von *t*(`r as.integer(tt_geschl_fomo$df)`)=`r round(tt_geschl_fomo$statistic, 2)` ist mit einem *p*-Wert von `r insight::format_p(tt_geschl_fomo$p)` mit einem $\alpha$-Niveaus von 5% statistisch nicht bedeutsam. Wir können also die Nullhypothese, dass der FOMO Mittelwert von männlichen und weiblichen Perosnen sich unterscheiden, **nicht** verwerfen. 
 
-Wichtig ist jedoch zu betonen, dass ein nicht signifikanter p-Wert nicht automatisch bedeutet, dass die Mittelwerte in der Population tatsächlich gleich sind. Die Schlussfolgerung, dass Gleichheit besteht, ist statistisch nicht zulässig, da ein Hypothesentest bei nicht signifikantem Ergebnis lediglich anzeigt, dass die Daten keinen ausreichenden Beleg für einen Unterschied liefern – er kann jedoch nicht bestätigen, dass tatsächlich kein Unterschied existiert.
+Wichtig ist jedoch zu betonen, dass ein nicht signifikanter *p*-Wert nicht automatisch bedeutet, dass die Mittelwerte in der Population tatsächlich gleich sind. Die Schlussfolgerung, dass Gleichheit besteht, ist statistisch nicht zulässig, da ein Hypothesentest bei nicht signifikantem Ergebnis lediglich anzeigt, dass die Daten keinen ausreichenden Beleg für einen Unterschied liefern – er kann jedoch nicht bestätigen, dass tatsächlich kein Unterschied existiert.
 
 **Effektstärke: Cohen’s *d***
 
 Die Effektstärke gibt die praktische Relevanz des Unterschieds an. Cohen’s *d* ist ein standardisiertes Maß für den Mittelwertsunterschied:
 
 ```{r}
-cohens_d(data_ttest, fomo ~ geschlecht)
+cohens_d(data_ttest, fomo ~ geschlecht) %>% tab_df()
 
 ```
 
-- $d = 0.2$: kleiner Effekt
-- $d = 0.5$: mittlerer Effekt
-- $d = 0.8$: großer Effekt
+- $d = 0.2$ –  kleiner Effekt
+- $d = 0.5$ –  mittlerer Effekt
+- $d = 0.8$ –  großer Effekt
 
-Eine Effektstärke von *d* = `r cohens_d(data_ttest, fomo ~ geschlecht)$effsize` bedeutet, dass sich die beiden Gruppen im Mittel um `r cohens_d(data_ttest, fomo ~ geschlecht)$effsize` Standardabweichungen unterscheiden. Es ist hier also maximal von einem kleinem Effekt auszugehen.
+Eine Effektstärke von *d* = `r round(cohens_d(data_ttest, fomo ~ geschlecht)$effsize, 2)` bedeutet, dass sich die beiden Gruppen im Mittel um `r round(cohens_d(data_ttest, fomo ~ geschlecht)$effsize, 2)` Standardabweichungen unterscheiden. Es ist hier also maximal von einem kleinem Effekt auszugehen.
 
 
 ### ANOVA
@@ -366,37 +338,40 @@ Wenn mehr als zwei Gruppen verglichen werden sollen, verwendet man die Varianzan
 Auch hier empfiehlt sich eine grafische Darstellung der Verteilung der FOMO-Werte in den verschiedenen Gruppen (z.B. nach Verfügbarkeitserwartung):
 
 ```{r}
-ggplot(data_proc, aes(verfuegbarkeitserwartung, fomo)) +
-   # Dichteplot
-   stat_slab(scale = 0.5, aes(fill = after_stat(level)), .width = c(.5, 1), show.legend = FALSE) +
-   # Mittelwerts der Geschlechter
-   stat_spike(at = "mean", scale = 0.5, linewidth = 0.8, size = 2) +
-   # Datenpunkte
-   geom_jitter(width = 0.01, alpha = .5) +
-   scale_y_continuous(
-      name = "FOMO",
-      limits = c(50, 130),
-      breaks = seq(50, 130, 10)
-   ) +
-   scale_x_discrete(
-      name = "Verfügbarkeitserwartung",
-      labels = c("Niedrig", "Mittel", "Hoch")
-   ) +
-   labs(
-      title = "**Dichteplot der FOMO-Skala nach Verfügbarkeitserwartung**",
-      subtitle = "*Der innere graue Bereich zeigt den Interquartilsbereich (IQR), der die mittleren 50 % der Werte umfasst und damit die Streuung und Symmetrie der Verteilung innerhalb jeder Gruppe verdeutlicht.*"  
-      ) +
-   scale_fill_manual(values = c("grey90", "grey70", NA))
+
+tidyplot(
+   data = data_proc, 
+   x = verfuegbarkeitserwartung, 
+   y = fomo, 
+   color = verfuegbarkeitserwartung
+   ) %>%
+   add_boxplot(box_width = 0.2, whiskers_width = 0) %>%
+   add_test_pvalue(
+      method = "tukey_hsd", 
+      p.adjust.method = "fdr",
+      label = "italic(p) = {format_p_value(p.adj, 0.001)}", 
+      hide_info = TRUE
+   ) %>%
+   remove_legend() |>
+   adjust_font(family = "Optima", fontsize = 11) %>%
+   adjust_y_axis(limits = c(1, 5), breaks = seq(1, 5)) %>% 
+   adjust_x_axis_title("Verfügbarkeitserwartung") %>%
+   adjust_y_axis_title("FOMO") %>%
+   adjust_size(width = NA, height = NA) %>%
+   adjust_colors(colors_discrete_metro)
+
+
 
 ```
+
 
 Diese Grafik zeigt die Verteilung, Streuung und Mittelwerte der FOMO-Werte in allen drei Gruppen.
 
 **Voraussetzungen der ANOVA**
 
-1. Normalverteilung der abhängigen Variable in allen Gruppen.
-2. Varianzhomogenität (Gleichheit der Fehlervarianzen).
-3. Unabhängigkeit der Beobachtungen.
+1. **Normalverteilung** der abhängigen Variable in allen Gruppen.
+2. **Varianzhomogenität** (Gleichheit der Fehlervarianzen).
+3. **Unabhängigkeit** der Beobachtungen.
 
 **Statistischer Test**
 

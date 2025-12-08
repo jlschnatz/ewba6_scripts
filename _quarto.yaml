@@ -1,0 +1,30 @@
+project:
+  type: website
+  output-dir: _site
+
+website:
+  title: "EW-BA6: Datenanalyse"
+  navbar:
+    left:
+      - href: index.qmd
+        text: "Start"
+      - href: preprocess.qmd
+        text: "1. Datenaufbereitung"
+      - href: analysis.qmd
+        text: "2. Analyse"
+  page-footer: "Institut für Psychologie | Goethe-Universität Frankfurt"
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    code-tools: false
+    highlight-style: printing
+    df-print: paged
+    code-overflow: wrap          
+    html-math-method: mathjax  
+    
+lang: de
