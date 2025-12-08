@@ -15,6 +15,9 @@ website:
         text: "1. Datenaufbereitung"
       - href: analysis.qmd
         text: "2. Analyse"
+    right:
+      - text: "![](./logo.png){height=50px}" 
+        href: index.qmd 
   page-footer: "Institut für Psychologie | Goethe-Universität Frankfurt"
 
 format:

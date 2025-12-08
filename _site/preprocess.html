@@ -144,6 +144,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">2. Analyse</span></a>
   </li>  
 </ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./index.html"> 
+<span class="menu-text"><img src="./Goethe-Logo.png" height="50"></span></a>
+  </li>  
+</ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
 </div>
@@ -159,12 +165,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Auf dieser Seite</h2>
    
   <ul>
-  <li><a href="#einleitung" id="toc-einleitung" class="nav-link active" data-scroll-target="#einleitung"><span class="header-section-number">1</span> Einleitung</a></li>
-  <li><a href="#daten-in-r-laden" id="toc-daten-in-r-laden" class="nav-link" data-scroll-target="#daten-in-r-laden"><span class="header-section-number">2</span> Daten in R laden</a></li>
-  <li><a href="#überblick-über-die-daten-erhalten" id="toc-überblick-über-die-daten-erhalten" class="nav-link" data-scroll-target="#überblick-über-die-daten-erhalten"><span class="header-section-number">3</span> Überblick über die Daten erhalten</a></li>
-  <li><a href="#datenaufbereitung" id="toc-datenaufbereitung" class="nav-link" data-scroll-target="#datenaufbereitung"><span class="header-section-number">4</span> Datenaufbereitung</a></li>
-  <li><a href="#exportieren-des-datensatzes" id="toc-exportieren-des-datensatzes" class="nav-link" data-scroll-target="#exportieren-des-datensatzes"><span class="header-section-number">5</span> Exportieren des Datensatzes</a></li>
-  <li><a href="#verwendete-pakete" id="toc-verwendete-pakete" class="nav-link" data-scroll-target="#verwendete-pakete"><span class="header-section-number">6</span> Verwendete Pakete</a></li>
+  <li><a href="#einleitung" id="toc-einleitung" class="nav-link active" data-scroll-target="#einleitung">Einleitung</a></li>
+  <li><a href="#daten-in-r-laden" id="toc-daten-in-r-laden" class="nav-link" data-scroll-target="#daten-in-r-laden">Daten in R laden</a></li>
+  <li><a href="#überblick-über-die-daten-erhalten" id="toc-überblick-über-die-daten-erhalten" class="nav-link" data-scroll-target="#überblick-über-die-daten-erhalten">Überblick über die Daten erhalten</a></li>
+  <li><a href="#datenaufbereitung" id="toc-datenaufbereitung" class="nav-link" data-scroll-target="#datenaufbereitung">Datenaufbereitung</a></li>
+  <li><a href="#exportieren-des-datensatzes" id="toc-exportieren-des-datensatzes" class="nav-link" data-scroll-target="#exportieren-des-datensatzes">Exportieren des Datensatzes</a></li>
+  <li><a href="#verwendete-pakete" id="toc-verwendete-pakete" class="nav-link" data-scroll-target="#verwendete-pakete">Verwendete Pakete</a></li>
   </ul>
 </nav>
     </div>
@@ -218,12 +224,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="einleitung" class="level1" data-number="1">
-<h1 data-number="1"><span class="header-section-number">1</span> Einleitung</h1>
+<section id="einleitung" class="level1">
+<h1>Einleitung</h1>
 <p>In diesem Skript geht es um die Vorbereitungen für die Analysen, die ihr im Rahmen eurer Hausarbeit rechnen sollt. Das heißt, wir bereiten die Daten so auf, dass sie mithilfe des 2. Skripts ausgewertet werden können. Dies machen wir anhand eines Beispieldatensatzes, der eurem ähnelt und auch die gleichen Probleme und Fallstricke beinhaltet, sodass ihr im besten Fall die Skripte kopieren könnt und nur noch an eure Studien anpassen müsst.</p>
 </section>
-<section id="daten-in-r-laden" class="level1" data-number="2">
-<h1 data-number="2"><span class="header-section-number">2</span> Daten in R laden</h1>
+<section id="daten-in-r-laden" class="level1">
+<h1>Daten in R laden</h1>
 <p>Als erstes müssen die notwendigen Pakete geladen werden.</p>
 <p>Im zweiten Schritt müsst ihr die erhobenen Daten aus SosciSurvey in R laden, um dort mit den Daten rechnen und arbeiten zu können. Wenn man Dateien von SosciSurvey herunterlädt, liegen sie üblicherweise als <code>.csv</code> oder als <code>.excel</code> vor, hier als <code>.csv</code>.</p>
 <p>Ladet den Datensatz wie im entsprechenden Video vorgestellt von SosciSurvey herunter und stellt euer Working Directory richtig ein (<code>setwd()</code>). Dies muss der Ordner sein, indem der Datensatz liegt (verschiebt ihn hierfür manuell aus dem Downloadordner). Danach kann der Datensatz folgendermaßen eingelesen werden&nbsp;<code>read_csv()</code>.</p>
@@ -252,8 +258,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>data_roh <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"name-des-datensatzes.csv"</span>) <span class="co"># Datensatz in R laden</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="überblick-über-die-daten-erhalten" class="level1" data-number="3">
-<h1 data-number="3"><span class="header-section-number">3</span> Überblick über die Daten erhalten</h1>
+<section id="überblick-über-die-daten-erhalten" class="level1">
+<h1>Überblick über die Daten erhalten</h1>
 <p>Als erstes betrachten wir, welche Variablen alle existieren. Hierfür nutzen wir den <code>colnames()</code>-Befehl, der uns die Spaltennamen anzeigt. Im nächsten Schritt speichern wir einen 2. Datensatz, in dem die Variablen, die uns nicht interessieren (z.B. die IDs in SosciSurvey, die benötige Zeit, etc.) herauslöschen. Wir wählen hier die Proband:innen-Nummer, die demografischen Variablen (fangen alle mit “EI” an), die Items unseres Fragebogens (fangen alle mit “K” an) und die erwartete Verfügbarkeit in der Freundesgruppe (“VE01”) aus, ihr solltet in eurer Arbeit alle Variablen auswählen, die wichtig für eure Auswertung sind. Wenn ihr kein Muster in der Benennung der Variablennamen habt (also EI bzw. K), könnt ihr auch die Ergebnisse des colnames()-Befehls nutzen.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(data_roh)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -467,8 +473,8 @@ Disclaimer zu fehlenden Werten
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>data_ohneNA <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(data_brauchbar) <span class="co"># NAs auschließen</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="datenaufbereitung" class="level1" data-number="4">
-<h1 data-number="4"><span class="header-section-number">4</span> Datenaufbereitung</h1>
+<section id="datenaufbereitung" class="level1">
+<h1>Datenaufbereitung</h1>
 <p>In diesem Abschnitt wird der Datensatz Schritt für Schritt für unsere Analysen vorbereitet. Zuerst wird die Variable Geschlecht (<code>geschlecht</code>), die standardmäßig von SosciSurvey aus Zahlen 1 bis 3 beinhaltet, in eine verständlichere Form umgewandelt: Die Zahlen stehen jetzt für “m” (männlich), “w” (weiblich) und “d” (divers). Die Reihenfolge in der die Geschlechter durchnummeriert sind, hängt von eurer Erhebung ab. Ihr könnt diese im Codebook nachschauen.</p>
 <p>Die Variable “Erwartung der Verfuegbarkeit” (<code>verfuegbarkeitserwartung</code>) beinhaltet inwieweit die eigene Freundesgruppe erwartet, dass man schnell antwortet und für Ihre Anliegen und Probleme verfügbar ist. Diese Variable muss ebenfalls als analog zum Geschlecht als Faktor umkodiert werden.</p>
 <div class="cell">
@@ -547,15 +553,15 @@ niedrig  mittel    hoch
 </div>
 </div>
 </section>
-<section id="exportieren-des-datensatzes" class="level1" data-number="5">
-<h1 data-number="5"><span class="header-section-number">5</span> Exportieren des Datensatzes</h1>
+<section id="exportieren-des-datensatzes" class="level1">
+<h1>Exportieren des Datensatzes</h1>
 <p>Abschließend exportieren wir unseren aufbereiteten Datensatz, damit wir im nächsten Skript weiter damit arbeiten können und tatsächliche deskriptive und inferenzstatistische Analysen durchführen können. Wählt hier einen Ort auf euerem PC und Dateinamen aus, sodass ihr die Datei wiederfindet.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(data_ohneNA, <span class="st">"data/proc/daten_fomo_processed.csv"</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="verwendete-pakete" class="level1" data-number="6">
-<h1 data-number="6"><span class="header-section-number">6</span> Verwendete Pakete</h1>
+<section id="verwendete-pakete" class="level1">
+<h1>Verwendete Pakete</h1>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>sessioninfo<span class="sc">::</span><span class="fu">session_info</span>(<span class="at">pkgs =</span> <span class="st">"attached"</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -666,7 +672,7 @@ niedrig  mittel    hoch
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/jlschnatz\.github\.io\/ewba6\/");
+        var filterRegex = new RegExp('/' + window.location.host + '/');
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }

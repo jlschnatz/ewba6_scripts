@@ -102,6 +102,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Suchen"
   }
 }</script>
+<style>html{ scroll-behavior: smooth; }</style>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -164,6 +165,12 @@ window.Quarto = {
   <li class="nav-item">
     <a class="nav-link" href="./analysis.html"> 
 <span class="menu-text">2. Analyse</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./index.html"> 
+<span class="menu-text"><img src="./logo.png" height="50"></span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -345,7 +352,7 @@ Klick hier: Schritt-für-Schritt Installationsanleitung
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/jlschnatz\.github\.io\/ewba6\/");
+        var filterRegex = new RegExp('/' + window.location.host + '/');
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
@@ -690,4 +697,5 @@ Klick hier: Schritt-für-Schritt Installationsanleitung
 
 
 
+<script src="site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>
