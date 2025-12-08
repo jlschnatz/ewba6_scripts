@@ -48,7 +48,7 @@ Kopieren Sie diesen Code, fügen Sie ihn in die **Konsole** von RStudio ein und 
 
 ```r
 if (!require("pacman")) install.packages("pacman")
-pacman::p_load(tidyverse, rstatix, psych, sjPlot, naniar, readr, ggplot2)
+pacman::p_load(readr, dplyr, rstatix, sjPlot, systemfonts, tidyplots, naniar, psych, sjmisc)
 ```
 
 **Zu Schritt 4: Rohdaten**
