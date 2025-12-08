@@ -104,6 +104,27 @@ data_brauchbar <- data_roh[, sel_vars]
 
 Im nächsten Schritt wollen wir die Variablen so umbenennen, dass wir sie im nächsten Schritt einfacher nutzen können. Die notwendige Informationen sind im Codebook enthalten, welches ihr ebenfalls bei SosciSurvey herunterladen könnt. Es macht Sinn, die Namen auch inhaltlich zu benennen, in unserem Beispiel geht es um FOMO (Fear of missing out)
 
+::: {.panel-tabset}
+
+### Möglichkeit 1
+
+Wir können einerseits mit dem `rename(newname = oldname)`-Befehl des *dplyr*-Pakets einzeln Spalten umbennen. 
+
+```{r}
+
+data_brauchbar <- data_brauchbar %>%
+  rename(
+    id = CASE, zustimmung = EI05, geschlecht = EI01, alter = EI02_01,
+    fomo1 = K101_01, fomo2 = K101_02,  fomo3 = K101_03, # ...
+    # jede Variable, die geändert werden soll, hier einfügen
+  ) 
+
+```
+
+### Möglichkeit 2
+
+Wir können die Spalten auch gleichzeitig umbennen mit dem `colnames()`-Befehl. Dabei machen wir uns zu Nutze, dass die Spaltennamen für FOMO `fomo1`, `fomo2`, `fomo3`, ... bennant werden sollen und wir dadurch durch den `paste0("fomo", seq(1, 35))` die 35 Variablennamen mit einem Befehl erstellen können. Die Reihenfolge der neuen Spaltennamen muss der Reihenfolge der alten Spaltennamen entsprechen.
+
 ```{r}
 ## Neue Spaltennamen:
 colnames(data_brauchbar) <- c(
@@ -111,6 +132,8 @@ colnames(data_brauchbar) <- c(
   paste0("fomo", seq(1, 35)), "verfuegbarkeitserwartung"
   )
 ```
+
+:::
 
 Nun interessiert es uns, ob es fehlende Werte gibt. Dies kann man mit dem `anyNA()`-Befehl erfragen. Allerdings gibt es hier eine Schwierigkeiten, da SosciSurvey fehlende Werte nicht als NA sondern als -1 bzw. -9 speichert. Aus diesem Grund müssen wir festlegen, dass -1 und -9 als NAs angesehen werden.
 
