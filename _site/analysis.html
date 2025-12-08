@@ -174,7 +174,7 @@ window.Quarto = {
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
     <a class="nav-link" href="./index.html"> 
-<span class="menu-text"><img src="./Goethe-Logo.png" height="50"></span></a>
+<span class="menu-text"><img src="./logo.png" height="50"></span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -1007,7 +1007,7 @@ window.Quarto = {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/jlschnatz\.github\.io\/ewba6\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
