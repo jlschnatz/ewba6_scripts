@@ -258,7 +258,7 @@ Klick hier: Schritt-für-Schritt Installationsanleitung
 <p><strong>Zu Schritt 3: Pakete installieren</strong></p>
 <p>Kopieren Sie diesen Code, fügen Sie ihn in die <strong>Konsole</strong> von RStudio ein und drücken Sie Enter:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">require</span>(<span class="st">"pacman"</span>)) <span class="fu">install.packages</span>(<span class="st">"pacman"</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidyverse, rstatix, psych, sjPlot, naniar, readr, ggplot2)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(readr, dplyr, rstatix, sjPlot, systemfonts, tidyplots, naniar, psych, sjmisc)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p><strong>Zu Schritt 4: Rohdaten</strong></p>
 <p>Laden Sie den Datensatz hier herunter: <a href="https://raw.githubusercontent.com/jlschnatz/ewba6_scripts/master/data/raw/data_ewba6_raw_v2.csv">Datensatz (CSV)</a> downloaden.</p>
 <ul>
@@ -345,7 +345,7 @@ Klick hier: Schritt-für-Schritt Installationsanleitung
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/jlschnatz\.github\.io\/ewba6\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }

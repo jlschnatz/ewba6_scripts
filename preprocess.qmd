@@ -5,33 +5,12 @@ author:
   - name: "Erik Grützner"
     affiliation: "Institut für Psychologie, Abteilung für Differentielle Psychologie und Psychologische Diagnostik"
     email: gruetzner@psych.uni-frankfurt.de
-    corresponding: true
+    corresponding: false
   - name: "Luca Schnatz"
     affiliation: "Institut für Psychologie, Abteilung für Psychologische Methoden mit Interdisziplinärer Ausrichtung"
     email: schnatz@psych.uni-frankfurt.de
-date: today
-format: 
-   html:
-      toc: true
-      theme: cosmo               
-      toc-depth: 3 
-      language: de    
-      css: styles.css             
-      lang: de          
-      number-sections: true      
-      #self-contained: true   
-      code-overflow: wrap    
-      code-fold: false            
-      code-tools: false           
-      highlight-style: printing   
-      html-math-method: mathjax  
-      fig-align: center          
-      fig-cap-location: bottom   
-      fig-responsive: true      
-      echo: true   
-      warning: false              
-      anchor-sections: true     
-      smooth-scroll: true       
+    corresponding: true
+date: today   
 ---
 
 

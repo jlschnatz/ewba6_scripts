@@ -49,20 +49,6 @@
     "text": "Willkommen. Diese Webseite bündelt die R-Skripte für die statistische Auswertung Ihres Forschungsprojekts für das Seminar EW-BA6."
   },
   {
-    "objectID": "index.html#aufbau",
-    "href": "index.html#aufbau",
-    "title": "Willkommen",
-    "section": "",
-    "text": "Datenaufbereitung: Wie man Daten von SoSciSurvey importiert, bereinigt und Skalen bildet.\nAnalyse: Deskriptive Statistik, t-Tests, ANOVA und Korrelationen."
-  },
-  {
-    "objectID": "index.html#voraussetzungen",
-    "href": "index.html#voraussetzungen",
-    "title": "Willkommen",
-    "section": "",
-    "text": "Bitte stellen Sie sicher, dass Sie R und RStudio installiert haben und die notwendigen Pakete (tidyverse, psych, etc.) bereitstehen."
-  },
-  {
     "objectID": "index.html#übersicht",
     "href": "index.html#übersicht",
     "title": "EW-BA6",
@@ -74,13 +60,6 @@
     "href": "index.html#setup",
     "title": "EW-BA6",
     "section": "Setup",
-    "text": "Setup\nDamit Sie die Skripte nutzen können, muss Ihre Arbeitsumgebung korrekt eingerichtet sein. Bitte arbeiten Sie diese vier Punkte nacheinander ab:\n\nR Installation\nRStudio Desktop Installation\nR-Pakete installieren\nRohdaten ablegen\n\n\n\n\n\n\n\nKlick hier: Schritt-für-Schritt Installationsanleitung\n\n\n\n\n\nWichtig: Installieren Sie zwingend zuerst R, danach RStudio.\nZu Schritt 1: R installieren\n\nWindows: Download hier\nmacOS: Download hier\n\nAchtung: Wählen Sie die richtige Version für Ihren Chip!\n“Apple Silicon” (M1/M2/M3) \\(\\rightarrow\\) arm64 Datei.\nAlter Intel-Mac \\(\\rightarrow\\) x86_64 Datei.\n\n\nZu Schritt 2: RStudio installieren\n\nLaden Sie die kostenlose “RStudio Desktop” Version hier herunter.\n\nZu Schritt 3: Pakete installieren\nKopieren Sie diesen Code, fügen Sie ihn in die Konsole von RStudio ein und drücken Sie Enter:\nif (!require(\"pacman\")) install.packages(\"pacman\")\npacman::p_load(tidyverse, rstatix, psych, sjPlot, naniar, readr, ggplot2)\nZu Schritt 4: Rohdaten\nLaden Sie den Datensatz hier herunter: Datensatz (CSV) downloaden.\n\nErstellen Sie in Ihrem Projektordner die Unterordner data und darin raw (data/raw).\nVerschieben Sie die Datei mit den Rohdaten genau dort hinein."
-  },
-  {
-    "objectID": "index.html#klick-hier-schritt-für-schritt-installationsanleitung",
-    "href": "index.html#klick-hier-schritt-für-schritt-installationsanleitung",
-    "title": "EW-BA6",
-    "section": "Klick hier: Schritt-für-Schritt Installationsanleitung",
-    "text": "Klick hier: Schritt-für-Schritt Installationsanleitung\nWichtig: Installieren Sie zwingend zuerst R, danach RStudio.\nZu Schritt 1: R installieren * Windows: Download hier. * Empfehlung: Installieren Sie zusätzlich RTools, um spätere Probleme mit Paketen zu vermeiden. * macOS: Download hier. * Achtung: Wählen Sie die richtige Version für Ihren Chip! * “Apple Silicon” (M1/M2/M3) \\(\\rightarrow\\) arm64 Datei. * Alter Intel-Mac \\(\\rightarrow\\) x86_64 Datei.\nZu Schritt 2: RStudio installieren * Laden Sie die kostenlose “RStudio Desktop” Version hier herunter.\nZu Schritt 3: Pakete installieren Kopieren Sie diesen Code, fügen Sie ihn unten links in die Konsole von RStudio ein und drücken Sie Enter:\nif (!require(\"pacman\")) install.packages(\"pacman\")\npacman::p_load(tidyverse, rstatix, psych, sjPlot, naniar, readr, ggplot2)"
+    "text": "Setup\nDamit Sie die Skripte nutzen können, muss Ihre Arbeitsumgebung korrekt eingerichtet sein. Bitte arbeiten Sie diese vier Punkte nacheinander ab:\n\nR Installation\nRStudio Desktop Installation\nR-Pakete installieren\nRohdaten ablegen\n\n\n\n\n\n\n\nKlick hier: Schritt-für-Schritt Installationsanleitung\n\n\n\n\n\nWichtig: Installieren Sie zwingend zuerst R, danach RStudio.\nZu Schritt 1: R installieren\n\nWindows: Download hier\nmacOS: Download hier\n\nAchtung: Wählen Sie die richtige Version für Ihren Chip!\n“Apple Silicon” (M1/M2/M3) \\(\\rightarrow\\) arm64 Datei.\nAlter Intel-Mac \\(\\rightarrow\\) x86_64 Datei.\n\n\nZu Schritt 2: RStudio installieren\n\nLaden Sie die kostenlose “RStudio Desktop” Version hier herunter.\n\nZu Schritt 3: Pakete installieren\nKopieren Sie diesen Code, fügen Sie ihn in die Konsole von RStudio ein und drücken Sie Enter:\nif (!require(\"pacman\")) install.packages(\"pacman\")\npacman::p_load(readr, dplyr, rstatix, sjPlot, systemfonts, tidyplots, naniar, psych, sjmisc)\nZu Schritt 4: Rohdaten\nLaden Sie den Datensatz hier herunter: Datensatz (CSV) downloaden.\n\nErstellen Sie in Ihrem Projektordner die Unterordner data und darin raw (data/raw).\nVerschieben Sie die Datei mit den Rohdaten genau dort hinein."
   }
 ]

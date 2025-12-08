@@ -11,32 +11,6 @@ author:
     email: gruetzner@psych.uni-frankfurt.de
     corresponding: false
 date: today
-
-format: 
-   html:
-      toc: true
-      theme: cosmo  
-      css: styles.css             
-      toc-depth: 3 
-      language: de    
-      lang: de          
-      number-sections: true      
-      #self-contained: true       
-      code-fold: false            
-      code-tools: false 
-      code-overflow: wrap          
-      highlight-style: printing    
-      html-math-method: mathjax  
-      fig-align: center          
-      fig-cap-location: bottom   
-      fig-responsive: true      
-      echo: true   
-      warning: false              
-      anchor-sections: true     
-      smooth-scroll: true    
-      knitr:     
-         opts_chunk:
-            dev: "ragg_png"    
 ---
 
 

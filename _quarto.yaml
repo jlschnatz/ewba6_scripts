@@ -29,5 +29,15 @@ format:
     df-print: paged
     code-overflow: wrap          
     html-math-method: mathjax  
+    fig-align: center          
+    fig-cap-location: bottom   
+    fig-responsive: true      
+    echo: true   
+    warning: false              
+    anchor-sections: true     
+    smooth-scroll: true   
+    knitr:     
+      opts_chunk:
+        dev: "ragg_png"    
     
 lang: de
