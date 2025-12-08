@@ -2,6 +2,9 @@ project:
   type: website
   output-dir: _site
 
+execute:
+  freeze: auto
+
 website:
   title: "EW-BA6: Datenanalyse"
   navbar:
